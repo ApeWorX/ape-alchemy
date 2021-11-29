@@ -7,6 +7,7 @@ extras_require = {
         "pytest>=6.0,<7.0",  # Core testing package
         "pytest-xdist",  # multi-process runner
         "pytest-cov",  # Coverage analyzer plugin
+        "pytest-mock",  # For creating mocks
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
     ],
     "lint": [
@@ -53,8 +54,9 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
+        "eth-ape>=0.1.0a29",
         "importlib-metadata ; python_version<'3.8'",
-    ],  # NOTE: Add 3rd party libraries here
+    ],
     python_requires=">=3.7,<4",
     extras_require=extras_require,
     py_modules=["ape_alchemy"],
