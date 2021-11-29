@@ -16,21 +16,6 @@ write_to = "ape_alchemy/version.py"
 line-length = 100
 target-version = ['py37', 'py38', 'py39']
 include = '\.pyi?$'
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | build
-  | dist
-  | env
-  | venv
-)/
-'''
 
 [tool.pytest.ini_options]
 addopts = """
