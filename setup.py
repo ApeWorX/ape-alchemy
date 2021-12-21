@@ -55,6 +55,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "eth-ape>=0.1.0b2",
+        "web3>=5.25.0,<6.0.0",
         "importlib-metadata ; python_version<'3.8'",
     ],
     python_requires=">=3.7,<4",
