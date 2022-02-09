@@ -28,7 +28,7 @@ python3 setup.py install
 
 ## Quick Usage
 
-First, make sure you have one of the expected environment variables set.
+First, make sure you have one of the following environment variables set (it doesn't matter which one):
 
 * WEB3_ALCHEMY_PROJECT_ID
 * WEB3_ALCHEMY_API_KEY
