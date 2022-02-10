@@ -28,7 +28,18 @@ python3 setup.py install
 
 ## Quick Usage
 
-Use in most commands using the `--network` option:
+First, make sure you have one of the following environment variables set (it doesn't matter which one):
+
+* WEB3_ALCHEMY_PROJECT_ID
+* WEB3_ALCHEMY_API_KEY
+
+Either in your current terminal session or in your root RC file (e.g. `.bashrc`), add the following:
+
+```bash
+export WEB3_ALCHEMY_PROJECT_ID=MY_API_TOKEN
+```
+
+To use the Alchemy provider plugin in most commands, set it via the `--network` option:
 
 ```bash
 ape console --network ethereum:goerli:alchemy
