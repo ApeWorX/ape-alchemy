@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 
 from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, TransactionError, VirtualMachineError
@@ -30,7 +31,14 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
     Docs: https://docs.alchemy.com/alchemy/
     """
 
-    def __post_init__(self):
+    network_uris: Dict[str, str] = {}
+
+    @property
+    def uri(self):
+        network_name = self.network.name
+        if network_name in self.network_uris:
+            return self.network_uris[network_name]
+
         key = None
         for env_var_name in _ENVIRONMENT_VARIABLE_NAMES:
             env_var = os.environ.get(env_var_name)
@@ -41,7 +49,9 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
         if not key:
             raise MissingProjectKeyError()
 
-        self.uri = f"https://eth-{self.network.name}.alchemyapi.io/v2/{key}"
+        network_uri = f"https://eth-{self.network.name}.alchemyapi.io/v2/{key}"
+        self.network_uris[network_name] = network_uri
+        return network_uri
 
     @property
     def connection_str(self) -> str:
