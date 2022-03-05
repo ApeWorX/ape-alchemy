@@ -58,7 +58,7 @@ setup(
         "web3>=5.25.0,<6.0.0",
         "importlib-metadata ; python_version<'3.8'",
     ],
-    python_requires=">=3.7,<4",
+    python_requires=">=3.7.2,<4",
     extras_require=extras_require,
     py_modules=["ape_alchemy"],
     license="Apache-2.0",
