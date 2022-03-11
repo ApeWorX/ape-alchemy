@@ -54,7 +54,7 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.1.0,0.2.0",
+        "eth-ape>=0.1.0,<0.2.0",
         "web3>=5.25.0,<6.0.0",
         "importlib-metadata ; python_version<'3.8'",
     ],
