@@ -54,7 +54,7 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.1.0b5",
+        "eth-ape>=0.1.0,0.2.0",
         "web3>=5.25.0,<6.0.0",
         "importlib-metadata ; python_version<'3.8'",
     ],
@@ -67,7 +67,7 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={"ape_alchemy": ["py.typed"]},
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: English",
@@ -77,5 +77,6 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
 )
