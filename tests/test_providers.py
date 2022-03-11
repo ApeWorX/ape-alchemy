@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 from ape.api import NetworkAPI, TransactionAPI
-from ape.api.config import ConfigItem
+from ape.api.config import PluginConfig
 from ape.exceptions import ContractLogicError
 from web3 import Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
@@ -33,7 +33,7 @@ def mock_network(mocker):
 
 @pytest.fixture
 def mock_config(mocker):
-    return mocker.MagicMock(spec=ConfigItem)
+    return mocker.MagicMock(spec=PluginConfig)
 
 
 @pytest.fixture
