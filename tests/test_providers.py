@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 from ape.api import NetworkAPI, TransactionAPI
-from ape.api.config import ConfigItem
+from ape.api.config import PluginConfig
 from ape.exceptions import ContractLogicError
 from web3 import Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
@@ -33,7 +33,7 @@ def mock_network(mocker):
 
 @pytest.fixture
 def mock_config(mocker):
-    return mocker.MagicMock(spec=ConfigItem)
+    return mocker.MagicMock(spec=PluginConfig)
 
 
 @pytest.fixture
@@ -48,65 +48,65 @@ def mock_transaction(mocker):
     return mocker.MagicMock(spec=TransactionAPI)
 
 
+@pytest.fixture
+def alchemy_provider(mock_network, mock_config) -> AlchemyEthereumProvider:
+    return AlchemyEthereumProvider(
+        name="alchemy",
+        network=mock_network,
+        config=mock_config,
+        request_header={},
+        data_folder=Path("."),
+        provider_settings={},
+    )
+
+
 class TestAlchemyEthereumProvider:
-    def test_when_no_api_key_raises_error(self, missing_token, mock_network, mock_config):
+    def test_when_no_api_key_raises_error(self, missing_token, alchemy_provider):
         with pytest.raises(MissingProjectKeyError) as err:
-            AlchemyEthereumProvider("alchemy", mock_network, mock_config, {}, Path("."), "")
+            alchemy_provider.connect()
 
         assert "Must set one of $WEB3_ALCHEMY_PROJECT_ID, $WEB3_ALCHEMY_API_KEY." in str(err.value)
 
-    def test_send_transaction_reverts(
-        self, token, mock_network, mock_config, mock_web3, mock_transaction
-    ):
-        provider = AlchemyEthereumProvider("alchemy", mock_network, mock_config, {}, Path("."), "")
-
+    def test_send_transaction_reverts(self, token, alchemy_provider, mock_web3, mock_transaction):
         expected_revert_message = "EXPECTED REVERT MESSAGE"
         mock_web3.eth.send_raw_transaction.side_effect = Web3ContractLogicError(
             f"execution reverted : {expected_revert_message}"
         )
-        provider._web3 = mock_web3
+        alchemy_provider._web3 = mock_web3
 
         with pytest.raises(ContractLogicError) as err:
-            provider.send_transaction(mock_transaction)
+            alchemy_provider.send_transaction(mock_transaction)
 
         assert err.value.revert_message == expected_revert_message
 
     def test_send_transaction_reverts_no_message(
-        self, token, mock_network, mock_config, mock_web3, mock_transaction
+        self, token, alchemy_provider, mock_web3, mock_transaction
     ):
-        provider = AlchemyEthereumProvider("alchemy", mock_network, mock_config, {}, Path("."), "")
-
         mock_web3.eth.send_raw_transaction.side_effect = Web3ContractLogicError(
             "execution reverted"
         )
-        provider._web3 = mock_web3
+        alchemy_provider._web3 = mock_web3
 
         with pytest.raises(ContractLogicError):
-            provider.send_transaction(mock_transaction)
+            alchemy_provider.send_transaction(mock_transaction)
 
-    def test_estimate_gas_would_revert(
-        self, token, mock_network, mock_config, mock_web3, mock_transaction
-    ):
-        provider = AlchemyEthereumProvider("alchemy", mock_network, mock_config, {}, Path("."), "")
-
+    def test_estimate_gas_would_revert(self, token, alchemy_provider, mock_web3, mock_transaction):
         expected_revert_message = "EXPECTED REVERT MESSAGE"
         mock_web3.eth.estimate_gas.side_effect = Web3ContractLogicError(
             f"execution reverted : {expected_revert_message}"
         )
-        provider._web3 = mock_web3
+        alchemy_provider._web3 = mock_web3
 
         with pytest.raises(ContractLogicError) as err:
-            provider.estimate_gas_cost(mock_transaction)
+            alchemy_provider.estimate_gas_cost(mock_transaction)
 
         assert err.value.revert_message == expected_revert_message
 
     def test_estimate_gas_would_revert_no_message(
-        self, token, mock_network, mock_config, mock_web3, mock_transaction
+        self, token, alchemy_provider, mock_web3, mock_transaction
     ):
-        provider = AlchemyEthereumProvider("alchemy", mock_network, mock_config, {}, Path("."), "")
-
         mock_web3.eth.estimate_gas.side_effect = Web3ContractLogicError("execution reverted")
-        provider._web3 = mock_web3
+        alchemy_provider._web3 = mock_web3
 
         with pytest.raises(ContractLogicError):
-            provider.estimate_gas_cost(mock_transaction)
+            alchemy_provider.estimate_gas_cost(mock_transaction)
