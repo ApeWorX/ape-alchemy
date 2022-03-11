@@ -67,9 +67,7 @@ class TestAlchemyEthereumProvider:
 
         assert "Must set one of $WEB3_ALCHEMY_PROJECT_ID, $WEB3_ALCHEMY_API_KEY." in str(err.value)
 
-    def test_send_transaction_reverts(
-        self, token, alchemy_provider, mock_web3, mock_transaction
-    ):
+    def test_send_transaction_reverts(self, token, alchemy_provider, mock_web3, mock_transaction):
         expected_revert_message = "EXPECTED REVERT MESSAGE"
         mock_web3.eth.send_raw_transaction.side_effect = Web3ContractLogicError(
             f"execution reverted : {expected_revert_message}"
@@ -92,9 +90,7 @@ class TestAlchemyEthereumProvider:
         with pytest.raises(ContractLogicError):
             alchemy_provider.send_transaction(mock_transaction)
 
-    def test_estimate_gas_would_revert(
-        self, token, alchemy_provider, mock_web3, mock_transaction
-    ):
+    def test_estimate_gas_would_revert(self, token, alchemy_provider, mock_web3, mock_transaction):
         expected_revert_message = "EXPECTED REVERT MESSAGE"
         mock_web3.eth.estimate_gas.side_effect = Web3ContractLogicError(
             f"execution reverted : {expected_revert_message}"
