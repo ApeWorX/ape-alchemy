@@ -12,9 +12,9 @@ extras_require = {
     ],
     "lint": [
         "black>=22.3.0,<23.0",  # auto-formatter and linter
-        "mypy>=0.910,<1.0",  # Static type analyzer
+        "mypy>=0.950,<1.0",  # Static type analyzer
         "flake8>=3.9.2,<4.0",  # Style linter
-        "isort>=5.9.3,<6.0",  # Import sorting linter
+        "isort>=5.10.1,<6.0",  # Import sorting linter
     ],
     "release": [  # `release` GitHub Action job uses this
         "setuptools",  # Installation tool
@@ -54,7 +54,7 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.2.1,<0.3.0",
+        "eth-ape>=0.2.2,<0.3.0",
         "web3>=5.25.0,<6.0.0",
         "importlib-metadata ; python_version<'3.8'",
     ],
