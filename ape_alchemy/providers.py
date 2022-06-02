@@ -66,67 +66,34 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
     def disconnect(self):
         self._web3 = None  # type: ignore
 
-    def estimate_gas_cost(self, txn: TransactionAPI) -> int:
-        """
-        Generates and returns an estimate of how much gas is necessary
-        to allow the transaction to complete.
-        The transaction will not be added to the blockchain.
-        """
-        try:
-            return super().estimate_gas_cost(txn)
-        except ValueError as err:
-            tx_error = _get_vm_error(err)
+    def get_virtual_machine_error(self, exception: Exception) -> VirtualMachineError:
+        if not hasattr(exception, "args") or not len(exception.args):
+            return VirtualMachineError(base_err=exception)
 
-            # If this is the cause of a would-be revert,
-            # raise ContractLogicError so that we can confirm tx-reverts.
-            if isinstance(tx_error, ContractLogicError):
-                raise tx_error from err
+        args = exception.args
+        message = args[0]
+        if (
+            not isinstance(exception, Web3ContractLogicError)
+            and isinstance(message, dict)
+            and "message" in message
+        ):
+            # Is some other VM error, like gas related
+            return VirtualMachineError(message=message["message"])
 
-            message = gas_estimation_error_message(tx_error)
-            raise TransactionError(base_err=tx_error, message=message) from err
+        elif not isinstance(message, str):
+            return VirtualMachineError(base_err=exception)
 
-    def send_transaction(self, txn: TransactionAPI) -> ReceiptAPI:
-        """
-        Creates a new message call transaction or a contract creation
-        for signed transactions.
-        """
-        try:
-            receipt = super().send_transaction(txn)
-        except ValueError as err:
-            raise _get_vm_error(err) from err
+        # If get here, we have detected a contract logic related revert.
+        message_prefix = "execution reverted"
+        if message.startswith(message_prefix):
+            message = message.replace(message_prefix, "")
 
-        receipt.raise_for_status()
-        return receipt
+            if ":" in message:
+                # Was given a revert message
+                message = message.split(":")[-1].strip()
+                return ContractLogicError(revert_message=message)
+            else:
+                # No revert message
+                return ContractLogicError()
 
-
-def _get_vm_error(web3_err: ValueError) -> VirtualMachineError:
-    if not hasattr(web3_err, "args") or not len(web3_err.args):
-        return VirtualMachineError(base_err=web3_err)
-
-    args = web3_err.args
-    message = args[0]
-    if (
-        not isinstance(web3_err, Web3ContractLogicError)
-        and isinstance(message, dict)
-        and "message" in message
-    ):
-        # Is some other VM error, like gas related
-        return VirtualMachineError(message=message["message"])
-
-    elif not isinstance(message, str):
-        return VirtualMachineError(base_err=web3_err)
-
-    # If get here, we have detected a contract logic related revert.
-    message_prefix = "execution reverted"
-    if message.startswith(message_prefix):
-        message = message.replace(message_prefix, "")
-
-        if ":" in message:
-            # Was given a revert message
-            message = message.split(":")[-1].strip()
-            return ContractLogicError(revert_message=message)
-        else:
-            # No revert message
-            return ContractLogicError()
-
-    return VirtualMachineError(message=message)
+        return VirtualMachineError(message=message)
