@@ -2,16 +2,23 @@ from ape import plugins
 
 from .providers import AlchemyEthereumProvider
 
-NETWORKS = [
-    "mainnet",
-    "ropsten",
-    "rinkeby",
-    "kovan",
-    "goerli",
-]
+NETWORKS = {
+    "ethereum": [
+        "mainnet",
+        "ropsten",
+        "rinkeby",
+        "kovan",
+        "goerli",
+    ],
+    "arbitrum": [
+        "mainnet",
+        "testnet",
+    ],
+}
 
 
 @plugins.register(plugins.ProviderPlugin)
 def providers():
-    for network_name in NETWORKS:
-        yield "ethereum", network_name, AlchemyEthereumProvider
+    for ecosystem_name in NETWORKS:
+        for network_name in NETWORKS[ecosystem_name]:
+            yield ecosystem_name network_name, AlchemyEthereumProvider
