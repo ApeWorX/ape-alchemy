@@ -31,6 +31,10 @@ class MissingProjectKeyError(AlchemyProviderError):
         env_var_str = ", ".join([f"${n}" for n in _ENVIRONMENT_VARIABLE_NAMES])
         super().__init__(f"Must set one of {env_var_str}.")
 
+class UnsupportedEcosystemError(ApeEtherscanException):
+    def __init__(self, ecosystem: str):
+        super().__init__(f"Unsupported Ecosystem: {ecosystem}")
+
 
 class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
     """
@@ -39,13 +43,15 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
     Docs: https://docs.alchemy.com/alchemy/
     """
 
-    network_uris: Dict[str, str] = {}
+    network_uris: Dict[tuple, str] = {}
 
     @property
     def uri(self):
+        ecosystem_name = self.ecosystem.name
         network_name = self.network.name
-        if network_name in self.network_uris:
-            return self.network_uris[network_name]
+        if ecosystem_name in self.network_uris:
+            if network_name in self.network_uris:
+                return self.network_uris[(ecosystem_name, network_name)]
 
         key = None
         for env_var_name in _ENVIRONMENT_VARIABLE_NAMES:
@@ -57,9 +63,16 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
         if not key:
             raise MissingProjectKeyError()
 
-        network_uri = f"https://eth-{self.network.name}.alchemyapi.io/v2/{key}"
-        self.network_uris[network_name] = network_uri
-        return network_uri
+        if ecosystem_name == "ethereum":
+            network_uri = f"https://eth-{self.network.name}.alchemyapi.io/v2/{key}"
+            self.network_uris[(ecosystem_name, network_name)] = network_uri
+            return network_uri
+        elif ecosystem_name == "arbitrum":
+            network_uri = f"https://arb-{self.network.name}.g.alchemyapi.io/v2/{key}"
+            self.network_uris[(ecosystem_name, network_name)] = network_uri
+            return network_uri
+        else:
+            raise UnsupportedEcosystemError()
 
     @property
     def connection_str(self) -> str:
