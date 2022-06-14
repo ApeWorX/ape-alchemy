@@ -22,7 +22,7 @@ class AlchemyProviderError(ProviderError):
 class AlchemyFeatureNotAvailable(AlchemyProviderError):
     """
     An error raised when trying to use a feature that is unavailable
-    on the user's tier.
+    on the user's tier or network.
     """
 
 
