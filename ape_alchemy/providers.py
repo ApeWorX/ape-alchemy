@@ -80,9 +80,10 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
             yield TraceFrame(**frame)
 
     def get_call_tree(self, txn_hash: str) -> CallTreeNode:
+        receipt = self.get_transaction(txn_hash)
         raw_trace_list = self._make_request("trace_transaction", [txn_hash])
         trace_list = ParityTraceList.parse_obj(raw_trace_list)
-        return get_calltree_from_parity_trace(trace_list)
+        return get_calltree_from_parity_trace(trace_list, gas_cost=receipt.gas_used)
 
     def get_virtual_machine_error(self, exception: Exception) -> VirtualMachineError:
         if not hasattr(exception, "args") or not len(exception.args):
