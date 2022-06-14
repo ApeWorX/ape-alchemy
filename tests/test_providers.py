@@ -4,10 +4,26 @@ import pytest
 from ape.api import NetworkAPI, TransactionAPI
 from ape.api.config import PluginConfig
 from ape.exceptions import ContractLogicError
+from requests import HTTPError, Response
 from web3 import Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 
-from ape_alchemy.providers import AlchemyEthereumProvider, MissingProjectKeyError
+from ape_alchemy.providers import (
+    AlchemyEthereumProvider,
+    AlchemyFeatureNotAvailable,
+    MissingProjectKeyError,
+)
+
+FEATURE_NOT_AVAILABLE_BECAUSE_OF_TIER_RESPONSE = (
+    "trace_transaction is not available on the Free tier - "
+    "upgrade to Growth or Enterprise for access. See available methods at "
+    "https://docs.alchemy.com/alchemy/documentation/apis"
+)
+FEATURE_NOT_AVAILABLE_BECAUSE_OF_NETWORK_RESPONSE = (
+    "trace_transaction is not available on the ETH_RINKEBY. "
+    "For more information see our docs: "
+    "https://docs.alchemy.com/alchemy/documentation/apis/ethereum"
+)
 
 
 @pytest.fixture
@@ -40,12 +56,32 @@ def mock_config(mocker):
 def mock_web3(mocker):
     mock = mocker.MagicMock(spec=Web3)
     mock.eth = mocker.MagicMock()
+    mock.manager = mocker.MagicMock()
     return mock
 
 
 @pytest.fixture
 def mock_transaction(mocker):
     return mocker.MagicMock(spec=TransactionAPI)
+
+
+@pytest.fixture
+def txn_hash():
+    return "0x55d07ce5e3f4f5742f3318cf328d700e43ee8cdb46000f2ac731a9379fca8ea7"
+
+
+@pytest.fixture(
+    params=(
+        FEATURE_NOT_AVAILABLE_BECAUSE_OF_TIER_RESPONSE,
+        FEATURE_NOT_AVAILABLE_BECAUSE_OF_NETWORK_RESPONSE,
+    )
+)
+def feature_not_available_http_error(mocker, request):
+    response = mocker.MagicMock(spec=Response)
+    response.fixture_param = request.param  # For assertions
+    response.json.return_value = {"error": {"message": request.param}}
+    error = HTTPError(response=response)
+    return error
 
 
 @pytest.fixture
@@ -65,7 +101,8 @@ class TestAlchemyEthereumProvider:
         with pytest.raises(MissingProjectKeyError) as err:
             alchemy_provider.connect()
 
-        assert "Must set one of $WEB3_ALCHEMY_PROJECT_ID, $WEB3_ALCHEMY_API_KEY." in str(err.value)
+        expected = "Must set one of $WEB3_ALCHEMY_PROJECT_ID, $WEB3_ALCHEMY_API_KEY."
+        assert expected in str(err.value)
 
     def test_send_transaction_reverts(self, token, alchemy_provider, mock_web3, mock_transaction):
         expected_revert_message = "EXPECTED REVERT MESSAGE"
@@ -110,3 +147,14 @@ class TestAlchemyEthereumProvider:
 
         with pytest.raises(ContractLogicError):
             alchemy_provider.estimate_gas_cost(mock_transaction)
+
+    def test_feature_not_available(
+        self, token, alchemy_provider, mock_web3, txn_hash, feature_not_available_http_error
+    ):
+        mock_web3.manager.request_blocking.side_effect = feature_not_available_http_error
+        alchemy_provider._web3 = mock_web3
+
+        with pytest.raises(AlchemyFeatureNotAvailable) as err:
+            _ = [t for t in alchemy_provider.get_transaction_trace(txn_hash)]
+
+        assert str(err.value) == feature_not_available_http_error.response.fixture_param

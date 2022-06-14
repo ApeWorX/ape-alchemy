@@ -12,7 +12,7 @@ extras_require = {
     ],
     "lint": [
         "black>=22.3.0,<23.0",  # auto-formatter and linter
-        "mypy>=0.950,<1.0",  # Static type analyzer
+        "mypy>=0.961,<1.0",  # Static type analyzer
         "flake8>=4.0.1,<5.0",  # Style linter
         "isort>=5.10.1,<6.0",  # Import sorting linter
     ],
