@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, Tuple
 
 from ape.api import UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
@@ -9,6 +9,10 @@ from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
 
 
+_ETH_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
+_ARB_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ARBITRUM_ALCHEMY_PROJECT_ID", "WEB3_ARBITRUM_ALCHEMY_API_KEY")
+
+
 class AlchemyProviderError(ProviderError):
     """
     An error raised by the Alchemy provider plugin.
@@ -16,8 +20,8 @@ class AlchemyProviderError(ProviderError):
 
 
 class MissingProjectKeyError(AlchemyProviderError):
-    def __init__(self):
-        env_var_str = ", ".join([f"${n}" for n in _ENVIRONMENT_VARIABLE_NAMES])
+    def __init__(self, options: Tuple[str]):
+        env_var_str = ", ".join([f"${n}" for n in options])
         super().__init__(f"Must set one of {env_var_str}.")
 
 
@@ -39,31 +43,26 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
         key = None
 
-        if ecosystem_name == "ethereum":
-            for env_var_name in ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY"):
-                env_var = os.environ.get(env_var_name)
-                if env_var:
-                    key = env_var
-                    break
-
-            if not key:
-                raise MissingProjectKeyError()
-
-            network_uri = f"https://eth-{self.network.name}.alchemyapi.io/v2/{key}"
-            self.network_uris[(ecosystem_name, network_name)] = network_uri
-            return network_uri
-
-        elif ecosystem_name == "arbitrum":
-            env_var = os.environ.get("WEB3_ALCHEMY_ARBITRUM_API_KEY")
+        options_by_ecosystem = {"ethereum": _ETH_ENVIRONMENT_VARIABLE_NAMES, "arbitrum": _ARB_ENVIRONMENT_VARIABLE_NAMES}
+        options = options_by_ecosystem[ecosystem_name]
+        for env_var_name in options:
+            env_var = os.environ.get(env_var_name)
             if env_var:
                 key = env_var
+                break
 
-            if not key:
-                raise MissingProjectKeyError()
+        if not key:
+            raise MissingProjectKeyError(options)
 
-            network_uri = f"https://arb-{self.network.name}.g.alchemyapi.io/v2/{key}"
-            self.network_uris[(ecosystem_name, network_name)] = network_uri
-            return network_uri
+        network_formats_by_ecosystem = {
+            "etheruem": f"https://eth-{0}.alchemyapi.io/v2/{1}",
+            "arbitrum": f"https://arb-{0}.g.alchemyapi.io/v2/{1}"
+        }
+
+        network_format = network_formats_by_ecosystem[ecosystem_name]
+        uri = network = network_format.format(self.network.name, key)
+        self.network_uris[(ecosystem_name, network_name)] = network_uri
+        return network_uri
 
     @property
     def connection_str(self) -> str:
