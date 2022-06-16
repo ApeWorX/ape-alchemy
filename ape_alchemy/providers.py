@@ -8,9 +8,6 @@ from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
 
-_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
-
-
 class AlchemyProviderError(ProviderError):
     """
     An error raised by the Alchemy provider plugin.
@@ -45,20 +42,30 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
                 return self.network_uris[(ecosystem_name, network_name)]
 
         key = None
-        for env_var_name in _ENVIRONMENT_VARIABLE_NAMES:
-            env_var = os.environ.get(env_var_name)
+
+        if ecosystem_name == "ethereum":
+            for env_var_name in ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY"):
+                env_var = os.environ.get(env_var_name)
+                if env_var:
+                    key = env_var
+                    break
+
+            if not key:
+                raise MissingProjectKeyError()
+
+            network_uri = f"https://eth-{self.network.name}.alchemyapi.io/v2/{key}"
+            self.network_uris[(ecosystem_name, network_name)] = network_uri
+            return network_uri
+
+        elif ecosystem_name == "arbitrum":
+            env_var = os.environ.get("WEB3_ALCHEMY_ARBITRUM_API_KEY")
             if env_var:
                 key = env_var
                 break
 
-        if not key:
-            raise MissingProjectKeyError()
+            if not key:
+                raise MissingProjectKeyError()
 
-        if ecosystem_name == "ethereum":
-            network_uri = f"https://eth-{self.network.name}.alchemyapi.io/v2/{key}"
-            self.network_uris[(ecosystem_name, network_name)] = network_uri
-            return network_uri
-        elif ecosystem_name == "arbitrum":
             network_uri = f"https://arb-{self.network.name}.g.alchemyapi.io/v2/{key}"
             self.network_uris[(ecosystem_name, network_name)] = network_uri
             return network_uri
