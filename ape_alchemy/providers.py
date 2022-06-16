@@ -64,14 +64,14 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
             raise MissingProjectKeyError(options)
 
         network_formats_by_ecosystem = {
-            "etheruem": f"https://eth-{0}.alchemyapi.io/v2/{1}",
+            "ethereum": f"https://eth-{0}.alchemyapi.io/v2/{1}",
             "arbitrum": f"https://arb-{0}.g.alchemyapi.io/v2/{1}"
         }
 
         network_format = network_formats_by_ecosystem[ecosystem_name]
         uri = network = network_format.format(self.network.name, key)
-        self.network_uris[(ecosystem_name, network_name)] = network_uri
-        return network_uri
+        self.network_uris[(ecosystem_name, network_name)] = uri
+        return uri
 
     @property
     def connection_str(self) -> str:
