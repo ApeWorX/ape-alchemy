@@ -10,6 +10,7 @@ from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
 
+
 class AlchemyProviderError(ProviderError):
     """
     An error raised by the Alchemy provider plugin.
