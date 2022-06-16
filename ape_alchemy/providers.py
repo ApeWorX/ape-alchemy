@@ -64,13 +64,8 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
             raise MissingProjectKeyError(options)
 
         network_formats_by_ecosystem = {
-<<<<<<< HEAD
             "ethereum": "https://eth-{0}.alchemyapi.io/v2/{1}",
             "arbitrum": "https://arb-{0}.g.alchemy.com/v2/{1}"
-=======
-            "ethereum": f"https://eth-{0}.alchemyapi.io/v2/{1}",
-            "arbitrum": f"https://arb-{0}.g.alchemyapi.io/v2/{1}"
->>>>>>> 995322d6bc0dcdcd7104c0a47ca598e1fa04d04f
         }
 
         network_format = network_formats_by_ecosystem[ecosystem_name]
