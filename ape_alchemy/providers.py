@@ -1,8 +1,10 @@
 import os
-from typing import Dict
+from typing import Any, Dict, Iterator
 
 from ape.api import UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
+from evm_trace import CallTreeNode, ParityTraceList, TraceFrame, get_calltree_from_parity_trace
+from requests import HTTPError
 from web3 import HTTPProvider, Web3  # type: ignore
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
@@ -14,6 +16,13 @@ _ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY"
 class AlchemyProviderError(ProviderError):
     """
     An error raised by the Alchemy provider plugin.
+    """
+
+
+class AlchemyFeatureNotAvailable(AlchemyProviderError):
+    """
+    An error raised when trying to use a feature that is unavailable
+    on the user's tier or network.
     """
 
 
@@ -63,7 +72,18 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
         self._web3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
 
     def disconnect(self):
-        self._web3 = None  # type: ignore
+        self._web3 = None
+
+    def get_transaction_trace(self, txn_hash: str) -> Iterator[TraceFrame]:
+        frames = self._make_request("debug_traceTransaction", [txn_hash]).structLogs
+        for frame in frames:
+            yield TraceFrame(**frame)
+
+    def get_call_tree(self, txn_hash: str) -> CallTreeNode:
+        receipt = self.get_transaction(txn_hash)
+        raw_trace_list = self._make_request("trace_transaction", [txn_hash])
+        trace_list = ParityTraceList.parse_obj(raw_trace_list)
+        return get_calltree_from_parity_trace(trace_list, gas_cost=receipt.gas_used)
 
     def get_virtual_machine_error(self, exception: Exception) -> VirtualMachineError:
         if not hasattr(exception, "args") or not len(exception.args):
@@ -96,3 +116,24 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
                 return ContractLogicError()
 
         return VirtualMachineError(message=message)
+
+    def _make_request(self, rpc: str, args: list) -> Any:
+        try:
+            return self.web3.manager.request_blocking(rpc, args)  # type: ignore
+        except HTTPError as err:
+            response_data = err.response.json()
+            if "error" not in response_data:
+                raise AlchemyProviderError(str(err)) from err
+
+            error_data = response_data["error"]
+            message = (
+                error_data.get("message", str(error_data))
+                if isinstance(error_data, dict)
+                else error_data
+            )
+            cls = (
+                AlchemyFeatureNotAvailable
+                if "is not available" in message
+                else AlchemyProviderError
+            )
+            raise cls(message) from err

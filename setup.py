@@ -12,7 +12,8 @@ extras_require = {
     ],
     "lint": [
         "black>=22.3.0,<23.0",  # auto-formatter and linter
-        "mypy>=0.950,<1.0",  # Static type analyzer
+        "mypy>=0.961,<1.0",  # Static type analyzer
+        "types-requests",  # NOTE: Needed due to mypy typeshed
         "flake8>=4.0.1,<5.0",  # Style linter
         "isort>=5.10.1,<6.0",  # Import sorting linter
     ],
@@ -54,9 +55,10 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.2.8,<0.3.0",
+        "eth-ape>=0.3.0,<0.4.0",
         "web3",  # Get web3 version from ape
         "importlib-metadata ; python_version<'3.8'",
+        "requests",
     ],
     python_requires=">=3.7.2,<4",
     extras_require=extras_require,
