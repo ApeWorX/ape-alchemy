@@ -45,6 +45,64 @@ To use the Alchemy provider plugin in most commands, set it via the `--network` 
 ape console --network ethereum:goerli:alchemy
 ```
 
+To connect to Alchemy from a Python script, use the `networks` top-level manager:
+
+```python
+from ape import networks
+
+with networks.parse_network_choice("ethereum:mainnet:alchemy") as provider:
+    ...
+```
+
+### Transaction Traces
+
+If you are using a paid tier of Alchemy, you have access to both Geth and Parity style traces.
+Parity traces are faster and thus are the ones uses in Ethereum receipts' `show_trace()` method:
+
+```python
+from ape import networks
+
+alchemy = networks.provider  # Assuming connected to Alchemy
+txn_hash = "0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d"
+receipt = alchemy.get_transaction(txn_hash)
+receipt.show_trace()  # Prints the Transaction trace
+```
+
+To access the raw `CallTree`, do:
+
+```python
+from ape import networks
+
+alchemy = networks.provider  # Assuming connected to Alchemy
+txn_hash = "0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d"
+call_tree = alchemy.get_call_tree(txn_hash)
+```
+
+To learn more about transaction traces, view [Ape's transaction guide](https://docs.apeworx.io/ape/stable/userguides/transactions.html#traces).
+
+**NOTE**: If you require the Geth style traces, you still have access to them via the `get_transaction_trace()` method and utilities from the `evm-trace` library:
+
+```python
+from evm_trace import CallType, get_calltree_from_geth_trace
+
+from ape import networks
+
+alchemy = networks.provider  # Assuming connected to Alchemy
+txn_hash = "0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d"
+receipt = alchemy.get_transaction(txn_hash)
+root_node_kwargs = {
+    "gas_cost": receipt.gas_used,
+    "gas_limit": receipt.gas_limit,
+    "address": receipt.receiver,
+    "calldata": receipt.data,
+    "value": receipt.value,
+    "call_type": CallType.CALL,
+    "failed": receipt.failed,
+}
+trace_frame_iter = alchemy.get_transaction_trace(txn_hash)
+call_tree = get_calltree_from_geth_trace(trace_frame_iter)
+```
+
 ## Development
 
 Please see the [contributing guide](CONTRIBUTING.md) to learn more how to contribute to this project.
