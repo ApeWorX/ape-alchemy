@@ -40,7 +40,7 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
     @property
     def uri(self):
-        ecosystem_name = self.ecosystem.name
+        ecosystem_name = self.network.ecosystem.name
         network_name = self.network.name
         if (ecosystem_name, network_name) in self.network_uris:
             return self.network_uris[(ecosystem_name, network_name)]
