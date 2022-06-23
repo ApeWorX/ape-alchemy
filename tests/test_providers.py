@@ -44,6 +44,7 @@ def token(mocker):
 def mock_network(mocker):
     mock = mocker.MagicMock(spec=NetworkAPI)
     mock.name = "MOCK_NETWORK"
+    mock.ecosystem.name = "MOCK_ECOSYSTEM"
     return mock
 
 
