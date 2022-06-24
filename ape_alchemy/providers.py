@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Tuple, Iterator
+from typing import Any, Dict, Iterator, Tuple
 
 from ape.api import UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
@@ -10,9 +10,11 @@ from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
 
-
 _ETH_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
-_ARB_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ARBITRUM_ALCHEMY_PROJECT_ID", "WEB3_ARBITRUM_ALCHEMY_API_KEY")
+_ARB_ENVIRONMENT_VARIABLE_NAMES = (
+    "WEB3_ARBITRUM_ALCHEMY_PROJECT_ID",
+    "WEB3_ARBITRUM_ALCHEMY_API_KEY",
+)
 
 
 class AlchemyProviderError(ProviderError):
@@ -52,7 +54,10 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
         key = None
 
-        options_by_ecosystem = {"ethereum": _ETH_ENVIRONMENT_VARIABLE_NAMES, "arbitrum": _ARB_ENVIRONMENT_VARIABLE_NAMES}
+        options_by_ecosystem = {
+            "ethereum": _ETH_ENVIRONMENT_VARIABLE_NAMES,
+            "arbitrum": _ARB_ENVIRONMENT_VARIABLE_NAMES,
+        }
         options = options_by_ecosystem[ecosystem_name]
         for env_var_name in options:
             env_var = os.environ.get(env_var_name)
@@ -65,11 +70,11 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
         network_formats_by_ecosystem = {
             "ethereum": "https://eth-{0}.alchemyapi.io/v2/{1}",
-            "arbitrum": "https://arb-{0}.g.alchemy.com/v2/{1}"
+            "arbitrum": "https://arb-{0}.g.alchemy.com/v2/{1}",
         }
 
         network_format = network_formats_by_ecosystem[ecosystem_name]
-        uri = network = network_format.format(self.network.name, key)
+        uri = network_format.format(self.network.name, key)
         self.network_uris[(ecosystem_name, network_name)] = uri
         return uri
 
