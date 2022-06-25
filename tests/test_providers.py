@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from ape.api import NetworkAPI, TransactionAPI
+from ape.api import EcosystemAPI, NetworkAPI, TransactionAPI
 from ape.api.config import PluginConfig
 from ape.exceptions import ContractLogicError
 from requests import HTTPError, Response
@@ -44,6 +44,7 @@ def token(mocker):
 def mock_network(mocker):
     mock = mocker.MagicMock(spec=NetworkAPI)
     mock.name = "MOCK_NETWORK"
+    mock.ecosystem = mocker.MagicMock(spec=EcosystemAPI)
     mock.ecosystem.name = "MOCK_ECOSYSTEM"
     return mock
 
