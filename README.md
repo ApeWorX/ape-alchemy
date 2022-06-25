@@ -1,6 +1,6 @@
 # Ape Alchemy Plugin
 
-Alchemy Provider plugins for Ethereum-based networks.
+[Alchemy](https://alchemy.com/?r=jk3NDM0MTIwODIzM) Provider plugin for Ethereum-based networks.
 
 ## Dependencies
 
