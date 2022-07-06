@@ -31,7 +31,7 @@ class AlchemyFeatureNotAvailable(AlchemyProviderError):
 
 
 class MissingProjectKeyError(AlchemyProviderError):
-    def __init__(self, options: Tuple[str]):
+    def __init__(self, options: Tuple[str, ...]):
         env_var_str = ", ".join([f"${n}" for n in options])
         super().__init__(f"Must set one of {env_var_str}.")
 
@@ -84,15 +84,19 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
     def connect(self):
         self._web3 = Web3(HTTPProvider(self.uri))
-        if self._web3.eth.chain_id in (4, 5, 42):
-            self._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
-        self._web3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
+        try:
+            if self._web3.eth.chain_id in (4, 5, 42):
+                self._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+            self._web3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
+        except Exception as err:
+            raise ProviderError(f"Failed to connect to Alchemy.\n{repr(err)}") from err
 
     def disconnect(self):
         self._web3 = None
 
     def get_transaction_trace(self, txn_hash: str) -> Iterator[TraceFrame]:
-        frames = self._make_request("debug_traceTransaction", [txn_hash]).structLogs
+        result = self._make_request("debug_traceTransaction", [txn_hash])
+        frames = result.get("structLogs", [])
         for frame in frames:
             yield TraceFrame(**frame)
 
@@ -136,7 +140,7 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
     def _make_request(self, rpc: str, args: list) -> Any:
         try:
-            return self.web3.manager.request_blocking(rpc, args)  # type: ignore
+            return self.web3.provider.make_request(rpc, args)  # type: ignore
         except HTTPError as err:
             response_data = err.response.json()
             if "error" not in response_data:
