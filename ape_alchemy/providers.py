@@ -9,6 +9,7 @@ from web3 import HTTPProvider, Web3  # type: ignore
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
+from web3.types import RPCEndpoint
 
 _ETH_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
 _ARB_ENVIRONMENT_VARIABLE_NAMES = (
@@ -140,7 +141,7 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
     def _make_request(self, rpc: str, args: list) -> Any:
         try:
-            return self.web3.provider.make_request(rpc, args)  # type: ignore
+            return self.web3.provider.make_request(RPCEndpoint(rpc), args)
         except HTTPError as err:
             response_data = err.response.json()
             if "error" not in response_data:
