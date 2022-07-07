@@ -153,7 +153,7 @@ class TestAlchemyEthereumProvider:
     def test_feature_not_available(
         self, token, alchemy_provider, mock_web3, txn_hash, feature_not_available_http_error
     ):
-        mock_web3.manager.request_blocking.side_effect = feature_not_available_http_error
+        mock_web3.provider.make_request.side_effect = feature_not_available_http_error
         alchemy_provider._web3 = mock_web3
 
         with pytest.raises(AlchemyFeatureNotAvailable) as err:
