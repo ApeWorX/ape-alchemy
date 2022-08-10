@@ -11,11 +11,20 @@ extras_require = {
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
     ],
     "lint": [
-        "black>=22.6.0,<23.0",  # auto-formatter and linter
-        "mypy>=0.971,<1.0",  # Static type analyzer
+        "black>=22.6.0",  # auto-formatter and linter
+        "mypy>=0.971",  # Static type analyzer
         "types-requests",  # NOTE: Needed due to mypy typeshed
-        "flake8>=4.0.1,<5.0",  # Style linter
-        "isort>=5.10.1,<6.0",  # Import sorting linter
+        "flake8>=<4.0.1",  # Style linter
+        "flake8-breakpoint>=1.1.0",  # detect breakpoints left in code
+        "flake8-print>=4.0.0",  # detect print statements left in code
+        "isort>=5.10.1",  # Import sorting linter
+    ],
+    "docs": [
+        "myst-parser>=0.17.0,<0.18",  # Tools for parsing markdown files in the docs
+        "sphinx-click>=3.1.0,<4.0",  # For documenting CLI
+        "Sphinx>=4.4.0,<5.0",  # Documentation generator
+        "sphinx_rtd_theme>=1.0.0,<2",  # Readthedocs.org theme
+        "sphinxcontrib-napoleon>=0.7",  # Allow Google-style documentation
     ],
     "release": [  # `release` GitHub Action job uses this
         "setuptools",  # Installation tool

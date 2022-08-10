@@ -31,6 +31,10 @@ class AlchemyFeatureNotAvailable(AlchemyProviderError):
 
 
 class MissingProjectKeyError(AlchemyProviderError):
+    """
+    An error raised when not using one of the options available.
+    """
+
     def __init__(self, options: Tuple[str, ...]):
         env_var_str = ", ".join([f"${n}" for n in options])
         super().__init__(f"Must set one of {env_var_str}.")
@@ -47,6 +51,15 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
     @property
     def uri(self):
+        """
+        Build from `ecosystem` and `network`.
+
+        `ecosystem`: choose from supported ecosystems
+        `network`: choose a network to connect to
+
+        Returns:
+            str: uri
+        """
         ecosystem_name = self.network.ecosystem.name
         network_name = self.network.name
         if (ecosystem_name, network_name) in self.network_uris:
