@@ -1,4 +1,4 @@
-# Ape-Docs
+# Ape-Alchemy Documentation
 
 ```{eval-rst}
 .. toctree::

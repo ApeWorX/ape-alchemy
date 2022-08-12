@@ -32,7 +32,7 @@ class AlchemyFeatureNotAvailable(AlchemyProviderError):
 
 class MissingProjectKeyError(AlchemyProviderError):
     """
-    An error raised when not using one of the options available.
+    An error raised when there is no API key set.
     """
 
     def __init__(self, options: Tuple[str, ...]):
@@ -52,7 +52,7 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
     @property
     def uri(self):
         """
-        Build from `ecosystem` and `network`.
+         Your Alchemy RPC URI, including the project ID.
 
         `ecosystem`: choose from supported ecosystems
         `network`: choose a network to connect to
