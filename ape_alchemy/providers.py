@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Iterator, Tuple
+from typing import Any, Dict, Iterator
 
 from ape.api import UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
@@ -10,34 +10,13 @@ from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
 
+from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
+
 _ETH_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
 _ARB_ENVIRONMENT_VARIABLE_NAMES = (
     "WEB3_ARBITRUM_ALCHEMY_PROJECT_ID",
     "WEB3_ARBITRUM_ALCHEMY_API_KEY",
 )
-
-
-class AlchemyProviderError(ProviderError):
-    """
-    An error raised by the Alchemy provider plugin.
-    """
-
-
-class AlchemyFeatureNotAvailable(AlchemyProviderError):
-    """
-    An error raised when trying to use a feature that is unavailable
-    on the user's tier or network.
-    """
-
-
-class MissingProjectKeyError(AlchemyProviderError):
-    """
-    An error raised when there is no API key set.
-    """
-
-    def __init__(self, options: Tuple[str, ...]):
-        env_var_str = ", ".join([f"${n}" for n in options])
-        super().__init__(f"Must set one of {env_var_str}.")
 
 
 class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):

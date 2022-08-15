@@ -14,4 +14,5 @@
    :maxdepth: 1
    
    methoddocs/providers.md
+   methoddocs/exceptions.md
 ```
