@@ -8,6 +8,7 @@ from web3.exceptions import ContractLogicError as Web3ContractLogicError
 
 from ape_alchemy.providers import AlchemyFeatureNotAvailable, MissingProjectKeyError
 
+
 TXN_HASH = "0x3cef4aaa52b97b6b61aa32b3afcecb0d14f7862ca80fdc76504c37a9374645c4"
 
 
