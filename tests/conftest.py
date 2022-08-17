@@ -37,6 +37,7 @@ def token(mocker):
     return mock
 
 
+@pytest.fixture
 def mock_web3(mocker):
     mock = mocker.MagicMock(spec=Web3)
     mock.eth = mocker.MagicMock()
