@@ -1,8 +1,6 @@
-from pathlib import Path
-
+import ape
 import pytest
-from ape.api import EcosystemAPI, NetworkAPI, TransactionAPI
-from ape.api.config import PluginConfig
+from ape.api import TransactionAPI
 from requests import HTTPError, Response
 from web3 import Web3
 
@@ -21,6 +19,11 @@ FEATURE_NOT_AVAILABLE_BECAUSE_OF_NETWORK_RESPONSE = (
 
 
 @pytest.fixture
+def networks():
+    return ape.networks
+
+
+@pytest.fixture
 def missing_token(mocker):
     mock = mocker.patch("os.environ.get")
     mock.return_value = None
@@ -32,20 +35,6 @@ def token(mocker):
     mock = mocker.patch("os.environ.get")
     mock.return_value = "TEST_TOKEN"
     return mock
-
-
-@pytest.fixture
-def mock_network(mocker):
-    mock = mocker.MagicMock(spec=NetworkAPI)
-    mock.name = "MOCK_NETWORK"
-    mock.ecosystem = mocker.MagicMock(spec=EcosystemAPI)
-    mock.ecosystem.name = "ethereum"
-    return mock
-
-
-@pytest.fixture
-def mock_config(mocker):
-    return mocker.MagicMock(spec=PluginConfig)
 
 
 @pytest.fixture
@@ -81,12 +70,5 @@ def feature_not_available_http_error(mocker, request):
 
 
 @pytest.fixture
-def alchemy_provider(mock_network, mock_config) -> AlchemyEthereumProvider:
-    return AlchemyEthereumProvider(
-        name="alchemy",
-        network=mock_network,
-        config=mock_config,
-        request_header={},
-        data_folder=Path("."),
-        provider_settings={},
-    )
+def alchemy_provider(networks) -> AlchemyEthereumProvider:
+    return networks.get_provider_from_choice("ethereum:rinkeby:alchemy")
