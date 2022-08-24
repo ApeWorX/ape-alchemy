@@ -31,13 +31,7 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
     @property
     def uri(self):
         """
-         Your Alchemy RPC URI, including the project ID.
-
-        `ecosystem`: choose from supported ecosystems
-        `network`: choose a network to connect to
-
-        Returns:
-            str: uri
+        Alchemy RPC URI, including the project ID.
         """
         ecosystem_name = self.network.ecosystem.name
         network_name = self.network.name
