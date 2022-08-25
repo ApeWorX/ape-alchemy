@@ -14,12 +14,12 @@ extras_require = {
         "black>=22.6.0",  # auto-formatter and linter
         "mypy>=0.971",  # Static type analyzer
         "types-requests",  # NOTE: Needed due to mypy typeshed
-        "flake8>=<4.0.1",  # Style linter
+        "flake8>=4.0.1",  # Style linter
         "flake8-breakpoint>=1.1.0",  # detect breakpoints left in code
         "flake8-print>=4.0.0",  # detect print statements left in code
         "isort>=5.10.1",  # Import sorting linter
     ],
-    "docs": [
+    "doc": [
         "myst-parser>=0.17.0,<0.18",  # Tools for parsing markdown files in the docs
         "sphinx-click>=3.1.0,<4.0",  # For documenting CLI
         "Sphinx>=4.4.0,<5.0",  # Documentation generator
@@ -44,6 +44,7 @@ extras_require = {
 extras_require["dev"] = (
     extras_require["test"]
     + extras_require["lint"]
+    + extras_require["doc"]
     + extras_require["release"]
     + extras_require["dev"]
 )
