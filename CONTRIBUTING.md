@@ -48,7 +48,7 @@ export GITHUB_ACCESS_TOKEN=<your-token>
 First, make sure you have the docs-related tooling installed:
 
 ```bash
-pip install -e .'[docs]'
+pip install -e .'[doc]'
 ```
 
 Then, run the following from the root project directory:
