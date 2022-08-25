@@ -1,10 +1,10 @@
-# Ape Alchemy Plugin
+# Quick Start
 
 [Alchemy](https://alchemy.com/?r=jk3NDM0MTIwODIzM) Provider plugin for Ethereum-based networks.
 
 ## Dependencies
 
-* [python3](https://www.python.org/downloads) version 3.7 or greater, python3-dev
+* [python3](https://www.python.org/downloads) version 3.7.2 or greater, python3-dev
 
 ## Installation
 
@@ -102,12 +102,3 @@ root_node_kwargs = {
 trace_frame_iter = alchemy.get_transaction_trace(txn_hash)
 call_tree = get_calltree_from_geth_trace(trace_frame_iter)
 ```
-
-## Development
-
-Please see the [contributing guide](CONTRIBUTING.md) to learn more how to contribute to this project.
-Comments, questions, criticisms and pull requests are welcomed.
-
-## License
-
-This project is licensed under the [Apache 2.0](LICENSE).
