@@ -14,6 +14,14 @@ NETWORKS = {
         "mainnet",
         "testnet",
     ],
+    "optimism": [
+        "mainnet",
+        "goerli",
+    ],
+    "polygon": [
+        "mainnet",
+        "mumbai",
+    ],
 }
 
 

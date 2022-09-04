@@ -12,11 +12,12 @@ from web3.middleware import geth_poa_middleware
 
 from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
 
-_ETH_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
-_ARB_ENVIRONMENT_VARIABLE_NAMES = (
-    "WEB3_ARBITRUM_ALCHEMY_PROJECT_ID",
-    "WEB3_ARBITRUM_ALCHEMY_API_KEY",
-)
+_ENVIRONMENT_VARIABLE_OPTIONS = {
+    "ethereum": ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY"),
+    "arbitrum": ("WEB3_ARBITRUM_ALCHEMY_PROJECT_ID", "WEB3_ARBITRUM_ALCHEMY_API_KEY"),
+    "optimism": ("WEB3_OPTIMISM_ALCHEMY_PROJECT_ID", "WEB3_OPTIMISM_ALCHEMY_API_KEY"),
+    "polygon": ("WEB3_POLYGON_ALCHEMY_PROJECT_ID", "WEB3_POLYGON_ALCHEMY_API_KEY"),
+}
 
 
 class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
@@ -40,11 +41,7 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
         key = None
 
-        options_by_ecosystem = {
-            "ethereum": _ETH_ENVIRONMENT_VARIABLE_NAMES,
-            "arbitrum": _ARB_ENVIRONMENT_VARIABLE_NAMES,
-        }
-        options = options_by_ecosystem[ecosystem_name]
+        options = _ENVIRONMENT_VARIABLE_OPTIONS[ecosystem_name]
         for env_var_name in options:
             env_var = os.environ.get(env_var_name)
             if env_var:
@@ -57,6 +54,8 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
         network_formats_by_ecosystem = {
             "ethereum": "https://eth-{0}.alchemyapi.io/v2/{1}",
             "arbitrum": "https://arb-{0}.g.alchemy.com/v2/{1}",
+            "optimism": "https://opt-{0}.g.alchemy.com/v2/{1}",
+            "polygon": "https://polygon-{0}.g.alchemy.com/v2/{1}",
         }
 
         network_format = network_formats_by_ecosystem[ecosystem_name]
