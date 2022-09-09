@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Start &mdash; ape-alchemy  documentation</title>
+  <link rel="stylesheet" href="/ape-alchemy/latest/_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="/ape-alchemy/latest/_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/ape-alchemy/latest/_static/custom.css" type="text/css" />
+      <link rel="stylesheet" href="/ape-alchemy/latest/_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="/ape-alchemy/latest/_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="/ape-alchemy/latest/_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="canonical" href="/ape-alchemy/userguides/quickstart.html" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <script src="../_static/custom.js"></script>
+  <script>
+      var PROJECT = "ape-alchemy";
+  </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Providers" href="../methoddocs/providers.html" />
+    <link rel="prev" title="Ape-Alchemy Documentation" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ape-alchemy
+            <img src="../_static/logo.gif" class="logo" alt="Logo"/>
+          </a>
+
+          <div class="version">
+            <label for="version-picker" id="version-picker-label">Version:</label>
+            <select id="version-picker">
+              <option value="">Select version...</option>
+              <option value="latest">latest</option>
+              <option value="stable">stable</option>
+                <option value="v0.5.0">v0.5.0</option>
+            </select>
+          </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Main">
+              <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#via-pip">via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#via-setuptools">via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-usage">Quick Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#transaction-traces">Transaction Traces</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Python Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../methoddocs/providers.html">Providers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../methoddocs/exceptions.html">Exceptions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" aria-label="Top" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ape-alchemy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Quick Start</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/userguides/quickstart.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline"></a></h1>
+<p><a class="reference external" href="https://alchemy.com/?r=jk3NDM0MTIwODIzM">Alchemy</a> Provider plugin for Ethereum-based networks.</p>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.python.org/downloads">python3</a> version 3.8 or greater, python3-dev</p></li>
+</ul>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
+<section id="via-pip">
+<h3>via <code class="docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#via-pip" title="Permalink to this headline"></a></h3>
+<p>You can install the latest release via <a class="reference external" href="https://pypi.org/project/pip/"><code class="docutils literal notranslate"><span class="pre">pip</span></code></a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ape-alchemy
+</pre></div>
+</div>
+</section>
+<section id="via-setuptools">
+<h3>via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code><a class="headerlink" href="#via-setuptools" title="Permalink to this headline"></a></h3>
+<p>You can clone the repository and use <a class="reference external" href="https://github.com/pypa/setuptools"><code class="docutils literal notranslate"><span class="pre">setuptools</span></code></a> for the most up-to-date version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ApeWorX/ape-alchemy.git
+<span class="nb">cd</span> ape-alchemy
+python3 setup.py install
+</pre></div>
+</div>
+</section>
+</section>
+<section id="quick-usage">
+<h2>Quick Usage<a class="headerlink" href="#quick-usage" title="Permalink to this headline"></a></h2>
+<p>First, make sure you have one of the following environment variables set (it doesn’t matter which one):</p>
+<ul class="simple">
+<li><p>WEB3_ALCHEMY_PROJECT_ID</p></li>
+<li><p>WEB3_ALCHEMY_API_KEY</p></li>
+</ul>
+<p>Either in your current terminal session or in your root RC file (e.g. <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>), add the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">WEB3_ALCHEMY_PROJECT_ID</span><span class="o">=</span>MY_API_TOKEN
+</pre></div>
+</div>
+<p>To use the Alchemy provider plugin in most commands, set it via the <code class="docutils literal notranslate"><span class="pre">--network</span></code> option:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ape console --network ethereum:goerli:alchemy
+</pre></div>
+</div>
+<p>To connect to Alchemy from a Python script, use the <code class="docutils literal notranslate"><span class="pre">networks</span></code> top-level manager:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
+
+<span class="k">with</span> <span class="n">networks</span><span class="o">.</span><span class="n">parse_network_choice</span><span class="p">(</span><span class="s2">&quot;ethereum:mainnet:alchemy&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">provider</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<section id="transaction-traces">
+<h3>Transaction Traces<a class="headerlink" href="#transaction-traces" title="Permalink to this headline"></a></h3>
+<p>If you are using a paid tier of Alchemy, you have access to both Geth and Parity style traces.
+Parity traces are faster and thus are the ones uses in Ethereum receipts’ <code class="docutils literal notranslate"><span class="pre">show_trace()</span></code> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
+
+<span class="n">alchemy</span> <span class="o">=</span> <span class="n">networks</span><span class="o">.</span><span class="n">provider</span>  <span class="c1"># Assuming connected to Alchemy</span>
+<span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">&quot;0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d&quot;</span>
+<span class="n">receipt</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_transaction</span><span class="p">(</span><span class="n">txn_hash</span><span class="p">)</span>
+<span class="n">receipt</span><span class="o">.</span><span class="n">show_trace</span><span class="p">()</span>  <span class="c1"># Prints the Transaction trace</span>
+</pre></div>
+</div>
+<p>To access the raw <code class="docutils literal notranslate"><span class="pre">CallTree</span></code>, do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
+
+<span class="n">alchemy</span> <span class="o">=</span> <span class="n">networks</span><span class="o">.</span><span class="n">provider</span>  <span class="c1"># Assuming connected to Alchemy</span>
+<span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">&quot;0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d&quot;</span>
+<span class="n">call_tree</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_call_tree</span><span class="p">(</span><span class="n">txn_hash</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To learn more about transaction traces, view <a class="reference external" href="https://docs.apeworx.io/ape/stable/userguides/transactions.html#traces">Ape’s transaction guide</a>.</p>
+<p><strong>NOTE</strong>: If you require the Geth style traces, you still have access to them via the <code class="docutils literal notranslate"><span class="pre">get_transaction_trace()</span></code> method and utilities from the <code class="docutils literal notranslate"><span class="pre">evm-trace</span></code> library:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">evm_trace</span> <span class="kn">import</span> <span class="n">CallType</span><span class="p">,</span> <span class="n">get_calltree_from_geth_trace</span>
+
+<span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
+
+<span class="n">alchemy</span> <span class="o">=</span> <span class="n">networks</span><span class="o">.</span><span class="n">provider</span>  <span class="c1"># Assuming connected to Alchemy</span>
+<span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">&quot;0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d&quot;</span>
+<span class="n">receipt</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_transaction</span><span class="p">(</span><span class="n">txn_hash</span><span class="p">)</span>
+<span class="n">root_node_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;gas_cost&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">gas_used</span><span class="p">,</span>
+    <span class="s2">&quot;gas_limit&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">gas_limit</span><span class="p">,</span>
+    <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">receiver</span><span class="p">,</span>
+    <span class="s2">&quot;calldata&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+    <span class="s2">&quot;call_type&quot;</span><span class="p">:</span> <span class="n">CallType</span><span class="o">.</span><span class="n">CALL</span><span class="p">,</span>
+    <span class="s2">&quot;failed&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">failed</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">trace_frame_iter</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_transaction_trace</span><span class="p">(</span><span class="n">txn_hash</span><span class="p">)</span>
+<span class="n">call_tree</span> <span class="o">=</span> <span class="n">get_calltree_from_geth_trace</span><span class="p">(</span><span class="n">trace_frame_iter</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Ape-Alchemy Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../methoddocs/providers.html" class="btn btn-neutral float-right" title="Providers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, ApeWorX LTD.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
