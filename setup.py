@@ -69,7 +69,7 @@ setup(
         "web3",  # Get web3 version from ape
         "requests",
     ],
-    python_requires=">=3.8,<4",
+    python_requires=">=3.8,<3.11",
     extras_require=extras_require,
     py_modules=["ape_alchemy"],
     license="Apache-2.0",
