@@ -75,6 +75,7 @@ jobs:
 
         - name: Run Tests
           run: pytest -m "not fuzzing" -s --cov=src -n auto
+
 # NOTE: uncomment this block after you've marked tests with @pytest.mark.fuzzing
 #    fuzzing:
 #        runs-on: ubuntu-latest
