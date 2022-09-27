@@ -83,10 +83,10 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
         result = self._make_request("debug_traceTransaction", [txn_hash])
         frames = result.get("structLogs", [])
         for frame in frames:
-            yield TraceFrame(**frame)
+            yield TraceFrame.parse_obj(frame)
 
     def get_call_tree(self, txn_hash: str) -> CallTreeNode:
-        receipt = self.get_transaction(txn_hash)
+        receipt = self.get_receipt(txn_hash)
         raw_trace_list = self._make_request("trace_transaction", [txn_hash])
         trace_list = ParityTraceList.parse_obj(raw_trace_list)
         return get_calltree_from_parity_trace(trace_list, gas_cost=receipt.gas_used)
