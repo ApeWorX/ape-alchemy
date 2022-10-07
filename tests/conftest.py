@@ -12,7 +12,7 @@ FEATURE_NOT_AVAILABLE_BECAUSE_OF_TIER_RESPONSE = (
     "https://docs.alchemy.com/alchemy/documentation/apis"
 )
 FEATURE_NOT_AVAILABLE_BECAUSE_OF_NETWORK_RESPONSE = (
-    "trace_transaction is not available on the ETH_RINKEBY. "
+    "trace_transaction is not available on the ETH_GOERLI. "
     "For more information see our docs: "
     "https://docs.alchemy.com/alchemy/documentation/apis/ethereum"
 )
@@ -71,4 +71,4 @@ def feature_not_available_http_error(mocker, request):
 
 @pytest.fixture
 def alchemy_provider(networks) -> AlchemyEthereumProvider:
-    return networks.get_provider_from_choice("ethereum:rinkeby:alchemy")
+    return networks.ethereum.goerli.get_provider("alchemy")
