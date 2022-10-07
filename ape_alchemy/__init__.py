@@ -5,14 +5,11 @@ from .providers import AlchemyEthereumProvider
 NETWORKS = {
     "ethereum": [
         "mainnet",
-        "ropsten",
-        "rinkeby",
-        "kovan",
         "goerli",
     ],
     "arbitrum": [
         "mainnet",
-        "testnet",
+        "goerli",
     ],
 }
 
