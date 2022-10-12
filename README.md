@@ -1,6 +1,10 @@
 # Quick Start
 
-[Alchemy](https://alchemy.com/?r=jk3NDM0MTIwODIzM) Provider plugin for Ethereum-based networks.
+Use the [Alchemy](https://alchemy.com/?r=jk3NDM0MTIwODIzM) provider plugin to interact with blockchains via APIs.
+The `ape-alchemy` plugin supports the following ecosystems:
+
+* Ethereum
+* Arbitrum
 
 ## Dependencies
 
