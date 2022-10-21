@@ -5,22 +5,19 @@ from ape.api import UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
 from evm_trace import CallTreeNode, ParityTraceList, TraceFrame, get_calltree_from_parity_trace
 from requests import HTTPError
-from web3 import HTTPProvider, Web3  # type: ignore
+from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
 
 from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
 
-_ENVIRONMENT_VARIABLE_OPTIONS = {
-    "ethereum": ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY"),
-    "arbitrum": ("WEB3_ARBITRUM_ALCHEMY_PROJECT_ID", "WEB3_ARBITRUM_ALCHEMY_API_KEY"),
-    "optimism": ("WEB3_OPTIMISM_ALCHEMY_PROJECT_ID", "WEB3_OPTIMISM_ALCHEMY_API_KEY"),
-    "polygon": ("WEB3_POLYGON_ALCHEMY_PROJECT_ID", "WEB3_POLYGON_ALCHEMY_API_KEY"),
-}
+# The user must either set one of these or an ENV VAR of the pattern:
+#  WEB3_<ECOSYSTEM>_<NETWORK>_PROJECT_ID or  WEB3_<ECOSYSTEM>_<NETWORK>_API_KEY
+DEFAULT_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
 
 
-class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
+class Alchemy(Web3Provider, UpstreamProvider):
     """
     A web3 provider using an HTTP connection to Alchemy.
 
@@ -41,7 +38,13 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
         key = None
 
-        options = _ENVIRONMENT_VARIABLE_OPTIONS[ecosystem_name]
+        expected_env_var_prefix = f"WEB3_{ecosystem_name}_{network_name}"
+        options = (
+            *DEFAULT_ENVIRONMENT_VARIABLE_NAMES,
+            f"{expected_env_var_prefix}_PROJECT_ID",
+            f"{expected_env_var_prefix}_API_KEY",
+        )
+
         for env_var_name in options:
             env_var = os.environ.get(env_var_name)
             if env_var:
