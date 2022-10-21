@@ -38,7 +38,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         key = None
 
-        expected_env_var_prefix = f"WEB3_{ecosystem_name.upper()}_{network_name.upper()}"
+        expected_env_var_prefix = f"WEB3_{ecosystem_name.upper()}_{network_name.upper()}_ALCHEMY"
         options = (
             *DEFAULT_ENVIRONMENT_VARIABLE_NAMES,
             f"{expected_env_var_prefix}_PROJECT_ID",
