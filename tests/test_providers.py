@@ -111,7 +111,13 @@ def receipt():
 def test_when_no_api_key_raises_error(missing_token, alchemy_provider):
     with pytest.raises(
         MissingProjectKeyError,
-        match=re.escape("Must set one of $WEB3_ALCHEMY_PROJECT_ID, $WEB3_ALCHEMY_API_KEY."),
+        match=re.escape(
+            "Must set one of "
+            "$WEB3_ALCHEMY_PROJECT_ID, "
+            "$WEB3_ALCHEMY_API_KEY, "
+            "$WEB3_ETHEREUM_GOERLI_ALCHEMY_PROJECT_ID, "
+            "$WEB3_ETHEREUM_GOERLI_ALCHEMY_API_KEY."
+        ),
     ):
         alchemy_provider.connect()
 
