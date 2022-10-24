@@ -112,6 +112,8 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 <ul class="simple">
 <li><p>Ethereum</p></li>
 <li><p>Arbitrum</p></li>
+<li><p>Optimism</p></li>
+<li><p>Polygon</p></li>
 </ul>
 <section id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
@@ -144,9 +146,16 @@ python3 setup.py install
 <ul class="simple">
 <li><p>WEB3_ALCHEMY_PROJECT_ID</p></li>
 <li><p>WEB3_ALCHEMY_API_KEY</p></li>
+<li><p>WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID</p></li>
+<li><p>WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID</p></li>
 </ul>
-<p>Either in your current terminal session or in your root RC file (e.g. <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>), add the following:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">WEB3_ALCHEMY_PROJECT_ID</span><span class="o">=</span>MY_API_TOKEN
+<p>For example, to use both Arbitrum and Ethereum in the same session, you could set both <code class="docutils literal notranslate"><span class="pre">WEB3_ARBITRUM_MAINNET_ALCHEMY_PRPJECT_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">WEB3_ETHEREUM_MAINNET_ALCHEMY_PRPJECT_ID</span></code>.</p>
+<p><strong>NOTE</strong>: If using non-Ethereum networks, take care to install the correct plugins, such as <code class="docutils literal notranslate"><span class="pre">ape-arbitrum</span></code>, <code class="docutils literal notranslate"><span class="pre">ape-optimism</span></code>, etc:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ape plugins install arbitrum
+</pre></div>
+</div>
+<p>Then, either in your current terminal session or in your root RC file (e.g. <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>), add the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">WEB3_ALCHEMY_PROJECT_ID</span><span class="o">=</span><span class="nv">MY_API_TOKEN</span><span class="o">=</span>&lt;value-of-secret-key&gt;
 </pre></div>
 </div>
 <p>To use the Alchemy provider plugin in most commands, set it via the <code class="docutils literal notranslate"><span class="pre">--network</span></code> option:</p>
