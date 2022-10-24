@@ -24,3 +24,4 @@ def test_alchemy(ecosystem, network):
     with network_cls.use_provider("alchemy") as provider:
         assert isinstance(provider, Alchemy)
         assert provider.get_balance(ZERO_ADDRESS) > 0
+        assert provider.get_block("latest")

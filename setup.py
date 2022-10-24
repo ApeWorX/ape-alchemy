@@ -14,10 +14,10 @@ extras_require = {
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
     ],
     "lint": [
-        "black>=22.6.0",  # auto-formatter and linter
-        "mypy>=0.971",  # Static type analyzer
+        "black>=22.10.0",  # auto-formatter and linter
+        "mypy>=0.982",  # Static type analyzer
         "types-requests",  # NOTE: Needed due to mypy typeshed
-        "flake8>=4.0.1",  # Style linter
+        "flake8>=5.0.4",  # Style linter
         "flake8-breakpoint>=1.1.0",  # detect breakpoints left in code
         "flake8-print>=4.0.0",  # detect print statements left in code
         "isort>=5.10.1",  # Import sorting linter
