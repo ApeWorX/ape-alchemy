@@ -6,7 +6,7 @@ from ape.types import LogFilter
 from hexbytes import HexBytes
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 
-from ape_alchemy.providers import AlchemyFeatureNotAvailable, MissingProjectKeyError
+from ape_alchemy.provider import AlchemyFeatureNotAvailable, MissingProjectKeyError
 
 TXN_HASH = "0x3cef4aaa52b97b6b61aa32b3afcecb0d14f7862ca80fdc76504c37a9374645c4"
 
@@ -111,7 +111,13 @@ def receipt():
 def test_when_no_api_key_raises_error(missing_token, alchemy_provider):
     with pytest.raises(
         MissingProjectKeyError,
-        match=re.escape("Must set one of $WEB3_ALCHEMY_PROJECT_ID, $WEB3_ALCHEMY_API_KEY."),
+        match=re.escape(
+            "Must set one of "
+            "$WEB3_ALCHEMY_PROJECT_ID, "
+            "$WEB3_ALCHEMY_API_KEY, "
+            "$WEB3_ETHEREUM_GOERLI_ALCHEMY_PROJECT_ID, "
+            "$WEB3_ETHEREUM_GOERLI_ALCHEMY_API_KEY."
+        ),
     ):
         alchemy_provider.connect()
 

@@ -1,6 +1,6 @@
 from ape import plugins
 
-from .providers import AlchemyEthereumProvider
+from .provider import Alchemy
 
 NETWORKS = {
     "ethereum": [
@@ -11,6 +11,14 @@ NETWORKS = {
         "mainnet",
         "goerli",
     ],
+    "optimism": [
+        "mainnet",
+        "goerli",
+    ],
+    "polygon": [
+        "mainnet",
+        "mumbai",
+    ],
 }
 
 
@@ -18,4 +26,4 @@ NETWORKS = {
 def providers():
     for ecosystem_name in NETWORKS:
         for network_name in NETWORKS[ecosystem_name]:
-            yield ecosystem_name, network_name, AlchemyEthereumProvider
+            yield ecosystem_name, network_name, Alchemy

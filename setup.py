@@ -4,6 +4,9 @@ from setuptools import find_packages, setup  # type: ignore
 
 extras_require = {
     "test": [  # `test` GitHub Action jobs uses this
+        "ape-arbitrum",  # Needed for testing Arbitrum integration
+        "ape-optimism",  # Needed for testing Optimism integration
+        "ape-polygon",  # Needed for testing Polygon integration
         "pytest>=6.0",  # Core testing package
         "pytest-xdist",  # multi-process runner
         "pytest-cov",  # Coverage analyzer plugin

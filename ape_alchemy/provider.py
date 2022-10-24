@@ -5,21 +5,19 @@ from ape.api import UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
 from evm_trace import CallTreeNode, ParityTraceList, TraceFrame, get_calltree_from_parity_trace
 from requests import HTTPError
-from web3 import HTTPProvider, Web3  # type: ignore
+from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
 
 from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
 
-_ETH_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
-_ARB_ENVIRONMENT_VARIABLE_NAMES = (
-    "WEB3_ARBITRUM_ALCHEMY_PROJECT_ID",
-    "WEB3_ARBITRUM_ALCHEMY_API_KEY",
-)
+# The user must either set one of these or an ENV VAR of the pattern:
+#  WEB3_<ECOSYSTEM>_<NETWORK>_PROJECT_ID or  WEB3_<ECOSYSTEM>_<NETWORK>_API_KEY
+DEFAULT_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
 
 
-class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
+class Alchemy(Web3Provider, UpstreamProvider):
     """
     A web3 provider using an HTTP connection to Alchemy.
 
@@ -40,11 +38,13 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
 
         key = None
 
-        options_by_ecosystem = {
-            "ethereum": _ETH_ENVIRONMENT_VARIABLE_NAMES,
-            "arbitrum": _ARB_ENVIRONMENT_VARIABLE_NAMES,
-        }
-        options = options_by_ecosystem[ecosystem_name]
+        expected_env_var_prefix = f"WEB3_{ecosystem_name.upper()}_{network_name.upper()}_ALCHEMY"
+        options = (
+            *DEFAULT_ENVIRONMENT_VARIABLE_NAMES,
+            f"{expected_env_var_prefix}_PROJECT_ID",
+            f"{expected_env_var_prefix}_API_KEY",
+        )
+
         for env_var_name in options:
             env_var = os.environ.get(env_var_name)
             if env_var:
@@ -57,6 +57,8 @@ class AlchemyEthereumProvider(Web3Provider, UpstreamProvider):
         network_formats_by_ecosystem = {
             "ethereum": "https://eth-{0}.alchemyapi.io/v2/{1}",
             "arbitrum": "https://arb-{0}.g.alchemy.com/v2/{1}",
+            "optimism": "https://opt-{0}.g.alchemy.com/v2/{1}",
+            "polygon": "https://polygon-{0}.g.alchemy.com/v2/{1}",
         }
 
         network_format = network_formats_by_ecosystem[ecosystem_name]

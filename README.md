@@ -5,6 +5,8 @@ The `ape-alchemy` plugin supports the following ecosystems:
 
 * Ethereum
 * Arbitrum
+* Optimism
+* Polygon
 
 ## Dependencies
 
@@ -36,11 +38,21 @@ First, make sure you have one of the following environment variables set (it doe
 
 * WEB3_ALCHEMY_PROJECT_ID
 * WEB3_ALCHEMY_API_KEY
+* WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID
+* WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID
 
-Either in your current terminal session or in your root RC file (e.g. `.bashrc`), add the following:
+For example, to use both Arbitrum and Ethereum in the same session, you could set both `WEB3_ARBITRUM_MAINNET_ALCHEMY_PRPJECT_ID` and `WEB3_ETHEREUM_MAINNET_ALCHEMY_PRPJECT_ID`.
+
+**NOTE**: If using non-Ethereum networks, take care to install the correct plugins, such as `ape-arbitrum`, `ape-optimism`, etc:
 
 ```bash
-export WEB3_ALCHEMY_PROJECT_ID=MY_API_TOKEN
+ape plugins install arbitrum
+```
+
+Then, either in your current terminal session or in your root RC file (e.g. `.bashrc`), add the following:
+
+```bash
+export WEB3_ALCHEMY_PROJECT_ID=MY_API_TOKEN=<value-of-secret-key>
 ```
 
 To use the Alchemy provider plugin in most commands, set it via the `--network` option:
