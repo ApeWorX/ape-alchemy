@@ -19,6 +19,14 @@ NETWORKS = {
         "mainnet",
         "mumbai",
     ],
+    "optimism": [
+        "mainnet",
+        "goerli",
+    ],
+    "polygon": [
+        "mainnet",
+        "mumbai",
+    ],
 }
 
 

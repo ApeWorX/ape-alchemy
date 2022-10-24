@@ -73,8 +73,10 @@ class Alchemy(Web3Provider, UpstreamProvider):
     def connect(self):
         self._web3 = Web3(HTTPProvider(self.uri))
         try:
-            if self._web3.eth.chain_id in (4, 5, 42):
+            # optimism:mainnet, optimism:goerli, polygon:mainnet, or polygon:mumbai
+            if self._web3.eth.chain_id in (10, 420, 137, 80001):
                 self._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+
             self._web3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
         except Exception as err:
             raise ProviderError(f"Failed to connect to Alchemy.\n{repr(err)}") from err
