@@ -15,7 +15,7 @@ extras_require = {
     ],
     "lint": [
         "black>=22.10.0",  # auto-formatter and linter
-        "mypy>=0.982",  # Static type analyzer
+        "mypy==0.982",  # Static type analyzer
         "types-requests",  # NOTE: Needed due to mypy typeshed
         "flake8>=5.0.4",  # Style linter
         "flake8-breakpoint>=1.1.0",  # detect breakpoints left in code
