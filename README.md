@@ -36,10 +36,10 @@ python3 setup.py install
 
 First, make sure you have one of the following environment variables set (it doesn't matter which one):
 
-* WEB3_ALCHEMY_PROJECT_ID
-* WEB3_ALCHEMY_API_KEY
-* WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID
-* WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID
+* `WEB3_ALCHEMY_PROJECT_ID`
+* `WEB3_ALCHEMY_API_KEY`
+* `WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID`
+* `WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID`
 
 For example, to use both Arbitrum and Ethereum in the same session, you could set both `WEB3_ARBITRUM_MAINNET_ALCHEMY_PROJECT_ID` and `WEB3_ETHEREUM_MAINNET_ALCHEMY_PROJECT_ID`.
 
