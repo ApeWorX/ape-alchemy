@@ -41,7 +41,7 @@ First, make sure you have one of the following environment variables set (it doe
 * WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID
 * WEB3_<ecosystem>_<network>_ALCHEMY_PROJECT_ID
 
-For example, to use both Arbitrum and Ethereum in the same session, you could set both `WEB3_ARBITRUM_MAINNET_ALCHEMY_PRPJECT_ID` and `WEB3_ETHEREUM_MAINNET_ALCHEMY_PRPJECT_ID`.
+For example, to use both Arbitrum and Ethereum in the same session, you could set both `WEB3_ARBITRUM_MAINNET_ALCHEMY_PROJECT_ID` and `WEB3_ETHEREUM_MAINNET_ALCHEMY_PROJECT_ID`.
 
 **NOTE**: If using non-Ethereum networks, take care to install the correct plugins, such as `ape-arbitrum`, `ape-optimism`, etc:
 
