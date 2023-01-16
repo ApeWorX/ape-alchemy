@@ -64,7 +64,7 @@ setup(
     name="ape-alchemy",
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
-    description="""ape-alchemy: Alchemy Provider plugins for Ethereum-based networks""",
+    description="""ape-alchemy: Alchemy provider plugins""",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="ApeWorX Ltd.",
