@@ -188,5 +188,5 @@ def test_get_call_tree(networks, alchemy_provider, mock_web3, parity_trace, rece
     alchemy_provider._web3 = mock_web3
     networks.active_provider = alchemy_provider
     actual = repr(alchemy_provider.get_call_tree(TXN_HASH))
-    expected = r"CALL: 0xC17f2C69aE2E66FD87367E3260412EEfF637F70E\.<0x96d373e5> \[1401584 gas\]"
+    expected = r"0xC17f2C69aE2E66FD87367E3260412EEfF637F70E\.0x96d373e5\(\) \[1401584 gas\]"
     assert re.match(expected, actual)

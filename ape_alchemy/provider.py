@@ -3,7 +3,8 @@ from typing import Any, Dict, Iterator
 
 from ape.api import UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
-from evm_trace import CallTreeNode, ParityTraceList, TraceFrame, get_calltree_from_parity_trace
+from ape.types import CallTreeNode, TraceFrame
+from evm_trace import ParityTraceList, get_calltree_from_parity_trace
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
@@ -97,7 +98,8 @@ class Alchemy(Web3Provider, UpstreamProvider):
     def get_call_tree(self, txn_hash: str) -> CallTreeNode:
         raw_trace_list = self._make_request("trace_transaction", [txn_hash])
         trace_list = ParityTraceList.parse_obj(raw_trace_list)
-        return get_calltree_from_parity_trace(trace_list)
+        evm_call = get_calltree_from_parity_trace(trace_list)
+        return self._create_call_tree_node(evm_call)
 
     def get_virtual_machine_error(self, exception: Exception) -> VirtualMachineError:
         if not hasattr(exception, "args") or not len(exception.args):
