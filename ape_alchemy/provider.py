@@ -127,10 +127,10 @@ class Alchemy(Web3Provider, UpstreamProvider):
             if ":" in message:
                 # Was given a revert message
                 message = message.split(":")[-1].strip()
-                return ContractLogicError(revert_message=message)
+                return ContractLogicError(revert_message=message, txn=txn)
             else:
                 # No revert message
-                return ContractLogicError()
+                return ContractLogicError(txn=txn)
 
         return VirtualMachineError(message=message, txn=txn)
 
