@@ -126,16 +126,16 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 <section id="via-pip">
 <h3>via <code class="docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#via-pip" title="Permalink to this headline"></a></h3>
 <p>You can install the latest release via <a class="reference external" href="https://pypi.org/project/pip/"><code class="docutils literal notranslate"><span class="pre">pip</span></code></a>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ape-alchemy
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ape-alchemy
 </pre></div>
 </div>
 </section>
 <section id="via-setuptools">
 <h3>via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code><a class="headerlink" href="#via-setuptools" title="Permalink to this headline"></a></h3>
 <p>You can clone the repository and use <a class="reference external" href="https://github.com/pypa/setuptools"><code class="docutils literal notranslate"><span class="pre">setuptools</span></code></a> for the most up-to-date version:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ApeWorX/ape-alchemy.git
-<span class="nb">cd</span> ape-alchemy
-python3 setup.py install
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ApeWorX/ape-alchemy.git
+<span class="nb">cd</span><span class="w"> </span>ape-alchemy
+python3<span class="w"> </span>setup.py<span class="w"> </span>install
 </pre></div>
 </div>
 </section>
@@ -151,15 +151,15 @@ python3 setup.py install
 </ul>
 <p>For example, to use both Arbitrum and Ethereum in the same session, you could set both <code class="docutils literal notranslate"><span class="pre">WEB3_ARBITRUM_MAINNET_ALCHEMY_PROJECT_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">WEB3_ETHEREUM_MAINNET_ALCHEMY_PROJECT_ID</span></code>.</p>
 <p><strong>NOTE</strong>: If using non-Ethereum networks, take care to install the correct plugins, such as <code class="docutils literal notranslate"><span class="pre">ape-arbitrum</span></code>, <code class="docutils literal notranslate"><span class="pre">ape-optimism</span></code>, etc:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ape plugins install arbitrum
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ape<span class="w"> </span>plugins<span class="w"> </span>install<span class="w"> </span>arbitrum
 </pre></div>
 </div>
 <p>Then, either in your current terminal session or in your root RC file (e.g. <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>), add the following:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">WEB3_ALCHEMY_PROJECT_ID</span><span class="o">=</span><span class="nv">MY_API_TOKEN</span><span class="o">=</span>&lt;value-of-secret-key&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">WEB3_ALCHEMY_PROJECT_ID</span><span class="o">=</span><span class="nv">MY_API_TOKEN</span><span class="o">=</span>&lt;value-of-secret-key&gt;
 </pre></div>
 </div>
 <p>To use the Alchemy provider plugin in most commands, set it via the <code class="docutils literal notranslate"><span class="pre">--network</span></code> option:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ape console --network ethereum:goerli:alchemy
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ape<span class="w"> </span>console<span class="w"> </span>--network<span class="w"> </span>ethereum:goerli:alchemy
 </pre></div>
 </div>
 <p>To connect to Alchemy from a Python script, use the <code class="docutils literal notranslate"><span class="pre">networks</span></code> top-level manager:</p>
