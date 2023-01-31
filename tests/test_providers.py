@@ -122,7 +122,7 @@ def test_when_no_api_key_raises_error(missing_token, alchemy_provider):
         alchemy_provider.connect()
 
 
-def test_send_transaction_reverts(token, alchemy_provider, mock_web3, mock_transaction):
+def test_send_transaction_reverts(token, alchemy_provider, mock_web3, transaction):
     expected_revert_message = "EXPECTED REVERT MESSAGE"
     mock_web3.eth.send_raw_transaction.side_effect = Web3ContractLogicError(
         f"execution reverted : {expected_revert_message}"
@@ -130,18 +130,18 @@ def test_send_transaction_reverts(token, alchemy_provider, mock_web3, mock_trans
     alchemy_provider._web3 = mock_web3
 
     with pytest.raises(ContractLogicError, match=expected_revert_message):
-        alchemy_provider.send_transaction(mock_transaction)
+        alchemy_provider.send_transaction(transaction)
 
 
-def test_send_transaction_reverts_no_message(token, alchemy_provider, mock_web3, mock_transaction):
+def test_send_transaction_reverts_no_message(token, alchemy_provider, mock_web3, transaction):
     mock_web3.eth.send_raw_transaction.side_effect = Web3ContractLogicError("execution reverted")
     alchemy_provider._web3 = mock_web3
 
     with pytest.raises(ContractLogicError, match="Transaction failed."):
-        alchemy_provider.send_transaction(mock_transaction)
+        alchemy_provider.send_transaction(transaction)
 
 
-def test_estimate_gas_would_revert(token, alchemy_provider, mock_web3, mock_transaction):
+def test_estimate_gas_would_revert(token, alchemy_provider, mock_web3, transaction):
     expected_revert_message = "EXPECTED REVERT MESSAGE"
     mock_web3.eth.estimate_gas.side_effect = Web3ContractLogicError(
         f"execution reverted : {expected_revert_message}"
@@ -149,15 +149,15 @@ def test_estimate_gas_would_revert(token, alchemy_provider, mock_web3, mock_tran
     alchemy_provider._web3 = mock_web3
 
     with pytest.raises(ContractLogicError, match=expected_revert_message):
-        alchemy_provider.estimate_gas_cost(mock_transaction)
+        alchemy_provider.estimate_gas_cost(transaction)
 
 
-def test_estimate_gas_would_revert_no_message(token, alchemy_provider, mock_web3, mock_transaction):
+def test_estimate_gas_would_revert_no_message(token, alchemy_provider, mock_web3, transaction):
     mock_web3.eth.estimate_gas.side_effect = Web3ContractLogicError("execution reverted")
     alchemy_provider._web3 = mock_web3
 
     with pytest.raises(ContractLogicError, match="Transaction failed."):
-        alchemy_provider.estimate_gas_cost(mock_transaction)
+        alchemy_provider.estimate_gas_cost(transaction)
 
 
 def test_feature_not_available(
