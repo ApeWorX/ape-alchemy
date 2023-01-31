@@ -3,7 +3,8 @@ from typing import Any, Dict, Iterator
 
 from ape.api import UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
-from evm_trace import CallTreeNode, ParityTraceList, TraceFrame, get_calltree_from_parity_trace
+from ape.types import CallTreeNode, TraceFrame
+from evm_trace import ParityTraceList, get_calltree_from_parity_trace
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
@@ -97,11 +98,13 @@ class Alchemy(Web3Provider, UpstreamProvider):
     def get_call_tree(self, txn_hash: str) -> CallTreeNode:
         raw_trace_list = self._make_request("trace_transaction", [txn_hash])
         trace_list = ParityTraceList.parse_obj(raw_trace_list)
-        return get_calltree_from_parity_trace(trace_list)
+        evm_call = get_calltree_from_parity_trace(trace_list)
+        return self._create_call_tree_node(evm_call)
 
-    def get_virtual_machine_error(self, exception: Exception) -> VirtualMachineError:
+    def get_virtual_machine_error(self, exception: Exception, **kwargs) -> VirtualMachineError:
+        txn = kwargs.get("txn")
         if not hasattr(exception, "args") or not len(exception.args):
-            return VirtualMachineError(base_err=exception)
+            return VirtualMachineError(base_err=exception, txn=txn)
 
         args = exception.args
         message = args[0]
@@ -111,10 +114,10 @@ class Alchemy(Web3Provider, UpstreamProvider):
             and "message" in message
         ):
             # Is some other VM error, like gas related
-            return VirtualMachineError(message=message["message"])
+            return VirtualMachineError(message["message"], txn=txn)
 
         elif not isinstance(message, str):
-            return VirtualMachineError(base_err=exception)
+            return VirtualMachineError(base_err=exception, txn=txn)
 
         # If get here, we have detected a contract logic related revert.
         message_prefix = "execution reverted"
@@ -124,12 +127,12 @@ class Alchemy(Web3Provider, UpstreamProvider):
             if ":" in message:
                 # Was given a revert message
                 message = message.split(":")[-1].strip()
-                return ContractLogicError(revert_message=message)
+                return ContractLogicError(revert_message=message, txn=txn)
             else:
                 # No revert message
-                return ContractLogicError()
+                return ContractLogicError(txn=txn)
 
-        return VirtualMachineError(message=message)
+        return VirtualMachineError(message=message, txn=txn)
 
     def _make_request(self, endpoint: str, parameters: list) -> Any:
         try:

@@ -1,6 +1,7 @@
+import os
+
 import ape
 import pytest
-from ape.api import TransactionAPI
 from requests import HTTPError, Response
 from web3 import Web3
 
@@ -19,21 +20,36 @@ FEATURE_NOT_AVAILABLE_BECAUSE_OF_NETWORK_RESPONSE = (
 
 
 @pytest.fixture
+def accounts():
+    return ape.accounts
+
+
+@pytest.fixture
 def networks():
     return ape.networks
 
 
 @pytest.fixture
 def missing_token(mocker):
+    env = os.environ.copy()
     mock = mocker.patch("os.environ.get")
-    mock.return_value = None
+
+    def side_effect(key, *args, **kwargs):
+        return None if "WEB3" in key else env.get(key, *args, **kwargs)
+
+    mock.side_effect = side_effect
     return mock
 
 
 @pytest.fixture
 def token(mocker):
+    env = os.environ.copy()
     mock = mocker.patch("os.environ.get")
-    mock.return_value = "TEST_TOKEN"
+
+    def side_effect(key, *args, **kwargs):
+        return "TEST_TOKEN" if "WEB3" in key else env.get(key, *args, **kwargs)
+
+    mock.side_effect = side_effect
     return mock
 
 
@@ -46,8 +62,12 @@ def mock_web3(mocker):
 
 
 @pytest.fixture
-def mock_transaction(mocker):
-    return mocker.MagicMock(spec=TransactionAPI)
+def transaction(accounts, networks):
+    with networks.ethereum.local.use_provider("test"):
+        sender = accounts.test_accounts[0]
+        receiver = accounts.test_accounts[1]
+        receipt = sender.transfer(receiver, "1 gwei")
+        return receipt.transaction
 
 
 @pytest.fixture
