@@ -10,6 +10,7 @@ from ape_alchemy.provider import Alchemy
     [
         ("ethereum", "mainnet"),
         ("ethereum", "goerli"),
+        ("ethereum", "sepolia"),
         ("arbitrum", "mainnet"),
         ("arbitrum", "goerli"),
         ("optimism", "mainnet"),
