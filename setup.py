@@ -72,7 +72,8 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.6.5,<0.7",
+        # TODO: Uncomment below
+        # "eth-ape>=0.6.5,<0.7",
         "web3",  # Get web3 version from ape
         "requests",
     ],
