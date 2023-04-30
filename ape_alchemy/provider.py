@@ -1,15 +1,19 @@
 import os
-from typing import Any, Dict, Iterator
+from typing import Any, Dict, Iterator, cast
 
 from ape.api import UpstreamProvider, Web3Provider
+from ape.api.transactions import ReceiptAPI, TransactionAPI
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
 from ape.types import CallTreeNode, TraceFrame
+from ape.logging import logger
 from evm_trace import ParityTraceList, get_calltree_from_parity_trace
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
+from web3.method import Method
+from web3.types import RPCEndpoint, TxParams
 
 from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
 
@@ -154,3 +158,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 else AlchemyProviderError
             )
             raise cls(message) from err
+
+    def send_private_transaction(self, txn: TransactionAPI) -> ReceiptAPI:
+        if not hasattr(self._web3.eth, 'send_private_transaction'):
+            self._web3.eth.attach_methods(
+                {"send_private_transaction": Method("eth_sendPrivateTransaction")}
+            )
+        # TODO: Format txn as per 
+        # https://docs.flashbots.net/flashbots-auction/searchers/advanced/rpc-endpoint#eth_sendprivatetransaction
