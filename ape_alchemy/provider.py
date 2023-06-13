@@ -5,6 +5,7 @@ from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
 from ape.logging import logger
 from ape.types import CallTreeNode, TraceFrame
+from ethpm_types import HexBytes
 from evm_trace import ParityTraceList, get_calltree_from_parity_trace
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
@@ -170,13 +171,17 @@ class Alchemy(Web3Provider, UpstreamProvider):
         Returns:
             :class:`~ape.api.transactions.ReceiptAPI`
         """
-
         max_block_number = kwargs.pop("max_block_number", None)
+
         params = {
-            "tx": txn.serialize_transaction(),
+            "tx": HexBytes(txn.serialize_transaction()).hex(),
             "maxBlockNumber": max_block_number,
-            "preferences": kwargs,
         }
+        if kwargs and "fast" not in kwargs:
+            # If sending preferences, `fast` must be present.
+            kwargs["fast"] = False
+            params["preferences"] = kwargs
+
         try:
             txn_hash = self._make_request("eth_sendPrivateTransaction", [params])
         except (ValueError, Web3ContractLogicError) as err:
