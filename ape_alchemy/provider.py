@@ -1,9 +1,12 @@
 import os
-from typing import Any, Dict, Iterator
+from typing import Any, Dict, Iterator, Optional
 
-from ape.api import UpstreamProvider, Web3Provider
+from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
+from ape.logging import logger
 from ape.types import CallTreeNode, TraceFrame
+from eth_typing import HexStr
+from ethpm_types import HexBytes
 from evm_trace import ParityTraceList, get_calltree_from_parity_trace
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
@@ -16,6 +19,9 @@ from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, Missin
 # The user must either set one of these or an ENV VAR of the pattern:
 #  WEB3_<ECOSYSTEM>_<NETWORK>_PROJECT_ID or  WEB3_<ECOSYSTEM>_<NETWORK>_API_KEY
 DEFAULT_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
+
+# Alchemy will try to publish private transactions for 25 blocks.
+PRIVATE_TX_BLOCK_WAIT = 25
 
 
 class Alchemy(Web3Provider, UpstreamProvider):
@@ -154,3 +160,80 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 else AlchemyProviderError
             )
             raise cls(message) from err
+
+    def send_private_transaction(self, txn: TransactionAPI, **kwargs) -> ReceiptAPI:
+        """
+        See `Alchemy's guide <https://www.alchemy.com/overviews/ethereum-private-transactions>`__
+        for more information on sending private transaction using Alchemy.
+        For more information on the API itself, see its
+        `REST reference <https://docs.alchemy.com/reference/eth-sendprivatetransaction>`__.
+
+        Args:
+            txn: (:class:`~ape.api.transactionsTransactionAPI`): The transaction.
+            **kwargs: Kwargs here are used for private-transaction "preferences".
+
+        Returns:
+            :class:`~ape.api.transactions.ReceiptAPI`
+        """
+        max_block_number = kwargs.pop("max_block_number", None)
+
+        params = {
+            "tx": HexBytes(txn.serialize_transaction()).hex(),
+            "maxBlockNumber": max_block_number,
+        }
+        if kwargs and "fast" not in kwargs:
+            # If sending preferences, `fast` must be present.
+            kwargs["fast"] = False
+            params["preferences"] = kwargs
+
+        try:
+            txn_hash = self._make_request("eth_sendPrivateTransaction", [params])
+        except (ValueError, Web3ContractLogicError) as err:
+            vm_err = self.get_virtual_machine_error(err, txn=txn)
+            raise vm_err from err
+
+        # Since Alchemy will attempt to publish for 25 blocks,
+        # we add 25 * block_time to the timeout.
+        timeout = (
+            PRIVATE_TX_BLOCK_WAIT * self.network.block_time
+            + self.network.transaction_acceptance_timeout
+        )
+
+        receipt = self.get_receipt(
+            txn_hash,
+            required_confirmations=(
+                txn.required_confirmations
+                if txn.required_confirmations is not None
+                else self.network.required_confirmations
+            ),
+            timeout=timeout,
+        )
+        logger.info(
+            f"Confirmed {receipt.txn_hash} (private) (total fees paid = {receipt.total_fees_paid})"
+        )
+        self.chain_manager.history.append(receipt)
+        return receipt
+
+    def get_receipt(
+        self,
+        txn_hash: str,
+        required_confirmations: int = 0,
+        timeout: Optional[int] = None,
+        **kwargs,
+    ) -> ReceiptAPI:
+        if not required_confirmations and not timeout:
+            # Allows `get_receipt` to work better when not sending.
+            data = self.web3.eth.get_transaction_receipt(HexStr(txn_hash))
+            txn = dict(self.web3.eth.get_transaction(HexStr(txn_hash)))
+            return self.network.ecosystem.decode_receipt(
+                {
+                    "provider": self,
+                    "required_confirmations": required_confirmations,
+                    **txn,
+                    **data,
+                }
+            )
+        # Sending txns will get here because they always pass in required confs.
+        return super().get_receipt(
+            txn_hash, required_confirmations=required_confirmations, timeout=timeout, **kwargs
+        )
