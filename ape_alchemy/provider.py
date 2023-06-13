@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Iterator
+from typing import Any, Dict, Iterator, Optional
 
 from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
@@ -188,6 +188,9 @@ class Alchemy(Web3Provider, UpstreamProvider):
             vm_err = self.get_virtual_machine_error(err, txn=txn)
             raise vm_err from err
 
+        # Use twice as long of a timeout as normal.
+        timeout = self.provider.network.transaction_acceptance_timeout * 2
+
         receipt = self.get_receipt(
             txn_hash,
             required_confirmations=(
@@ -195,9 +198,26 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 if txn.required_confirmations is not None
                 else self.network.required_confirmations
             ),
+            timeout=timeout,
         )
         logger.info(
             f"Confirmed {receipt.txn_hash} (private) (total fees paid = {receipt.total_fees_paid})"
         )
         self.chain_manager.history.append(receipt)
         return receipt
+
+    def get_receipt(
+        self,
+        txn_hash: str,
+        required_confirmations: int = 0,
+        timeout: Optional[int] = None,
+        **kwargs,
+    ) -> ReceiptAPI:
+        if not required_confirmations and not timeout:
+            # Allows `get_receipt` to work better when not sending.
+            return self.web3.eth.get_transaction_receipt(txn_hash)
+
+        # Sending txns will get here because they always pass in required confs.
+        return super().get_receipt(
+            txn_hash, required_confirmations=required_confirmations, timeout=timeout, **kwargs
+        )
