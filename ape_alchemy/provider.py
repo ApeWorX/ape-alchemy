@@ -19,6 +19,9 @@ from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, Missin
 #  WEB3_<ECOSYSTEM>_<NETWORK>_PROJECT_ID or  WEB3_<ECOSYSTEM>_<NETWORK>_API_KEY
 DEFAULT_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_API_KEY")
 
+# Alchemy will try to publish private transactions for 25 blocks.
+PRIVATE_TX_BLOCK_WAIT = 25
+
 
 class Alchemy(Web3Provider, UpstreamProvider):
     """
@@ -188,8 +191,12 @@ class Alchemy(Web3Provider, UpstreamProvider):
             vm_err = self.get_virtual_machine_error(err, txn=txn)
             raise vm_err from err
 
-        # Use twice as long of a timeout as normal.
-        timeout = self.provider.network.transaction_acceptance_timeout * 2
+        # Since Alchemy will attempt to publish for 25 blocks,
+        # we add 25 * block_time to the timeout.
+        timeout = (
+            PRIVATE_TX_BLOCK_WAIT * self.network.block_time
+            + self.network.transaction_acceptance_timeout
+        )
 
         receipt = self.get_receipt(
             txn_hash,
