@@ -1,8 +1,9 @@
 import os
 from typing import Any, Dict, Iterator
 
-from ape.api import UpstreamProvider, Web3Provider
+from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
+from ape.logging import logger
 from ape.types import CallTreeNode, TraceFrame
 from evm_trace import ParityTraceList, get_calltree_from_parity_trace
 from requests import HTTPError
@@ -154,3 +155,44 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 else AlchemyProviderError
             )
             raise cls(message) from err
+
+    def send_private_transaction(self, txn: TransactionAPI, **kwargs) -> ReceiptAPI:
+        """
+        See `Alchemy's guide <https://www.alchemy.com/overviews/ethereum-private-transactions>`__
+        for more information on sending private transaction using Alchemy.
+        For more information on the API itself, see its
+        `REST reference <https://docs.alchemy.com/reference/eth-sendprivatetransaction>`__.
+
+        Args:
+            txn: (:class:`~ape.api.transactionsTransactionAPI`): The transaction.
+            **kwargs: Kwargs here are used for private-transaction "preferences".
+
+        Returns:
+            :class:`~ape.api.transactions.ReceiptAPI`
+        """
+
+        max_block_number = kwargs.pop("max_block_number", None)
+        params = {
+            "tx": txn.serialize_transaction(),
+            "maxBlockNumber": max_block_number,
+            "preferences": kwargs,
+        }
+        try:
+            txn_hash = self._make_request("eth_sendPrivateTransaction", [params])
+        except (ValueError, Web3ContractLogicError) as err:
+            vm_err = self.get_virtual_machine_error(err, txn=txn)
+            raise vm_err from err
+
+        receipt = self.get_receipt(
+            txn_hash,
+            required_confirmations=(
+                txn.required_confirmations
+                if txn.required_confirmations is not None
+                else self.network.required_confirmations
+            ),
+        )
+        logger.info(
+            f"Confirmed {receipt.txn_hash} (private) (total fees paid = {receipt.total_fees_paid})"
+        )
+        self.chain_manager.history.append(receipt)
+        return receipt
