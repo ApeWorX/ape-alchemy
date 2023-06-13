@@ -5,6 +5,7 @@ from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
 from ape.logging import logger
 from ape.types import CallTreeNode, TraceFrame
+from eth_typing import HexStr
 from ethpm_types import HexBytes
 from evm_trace import ParityTraceList, get_calltree_from_parity_trace
 from requests import HTTPError
@@ -222,8 +223,16 @@ class Alchemy(Web3Provider, UpstreamProvider):
     ) -> ReceiptAPI:
         if not required_confirmations and not timeout:
             # Allows `get_receipt` to work better when not sending.
-            return self.web3.eth.get_transaction_receipt(txn_hash)
-
+            data = self.web3.eth.get_transaction_receipt(HexStr(txn_hash))
+            txn = dict(self.web3.eth.get_transaction(HexStr(txn_hash)))
+            return self.network.ecosystem.decode_receipt(
+                {
+                    "provider": self,
+                    "required_confirmations": required_confirmations,
+                    **txn,
+                    **data,
+                }
+            )
         # Sending txns will get here because they always pass in required confs.
         return super().get_receipt(
             txn_hash, required_confirmations=required_confirmations, timeout=timeout, **kwargs
