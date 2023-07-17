@@ -7,7 +7,7 @@ from ape.logging import logger
 from ape.types import CallTreeNode, TraceFrame
 from eth_typing import HexStr
 from ethpm_types import HexBytes
-from evm_trace import ParityTraceList, get_calltree_from_parity_trace
+from evm_trace import ParityTraceList, get_calltree_from_parity_trace, get_calltree_from_geth_call_trace
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
@@ -95,11 +95,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
     def disconnect(self):
         self._web3 = None
 
-    def get_transaction_trace(self, txn_hash: str) -> Iterator[TraceFrame]:
-        result = self._make_request("debug_traceTransaction", [txn_hash])
-        frames = result.get("structLogs", [])
-        for frame in frames:
-            yield TraceFrame.parse_obj(frame)
+    def _get_transaction_trace_using_call_tracer(self, txn_hash: str) -> Iterator[TraceFrame]:
+        # Create trace frames using geth-style call tracer
+        calls = self._make_request("debug_traceTransaction", [txn_hash, {"tracer": "callTracer"}])
+        evm_call = get_calltree_from_geth_call_trace(calls)
+        return self._create_call_tree_node(evm_call, txn_hash=txn_hash)
 
     def get_call_tree(self, txn_hash: str) -> CallTreeNode:
         raw_trace_list = self._make_request("trace_transaction", [txn_hash])
