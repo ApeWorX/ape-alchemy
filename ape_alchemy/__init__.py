@@ -12,6 +12,10 @@ NETWORKS = {
         "mainnet",
         "goerli",
     ],
+    "base": [
+        "mainnet",
+        "goerli",
+    ],
     "optimism": [
         "mainnet",
         "goerli",
