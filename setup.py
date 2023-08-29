@@ -5,6 +5,7 @@ from setuptools import find_packages, setup
 extras_require = {
     "test": [  # `test` GitHub Action jobs uses this
         "ape-arbitrum",  # Needed for testing Arbitrum integration
+        "ape-base",  # Needed for testing Base integration
         "ape-optimism",  # Needed for testing Optimism integration
         "ape-polygon",  # Needed for testing Polygon integration
         "pytest>=6.0",  # Core testing package
