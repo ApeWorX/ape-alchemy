@@ -95,26 +95,3 @@ call_tree = alchemy.get_call_tree(txn_hash)
 ```
 
 To learn more about transaction traces, view [Ape's transaction guide](https://docs.apeworx.io/ape/stable/userguides/transactions.html#traces).
-
-**NOTE**: If you require the Geth style traces, you still have access to them via the `get_transaction_trace()` method and utilities from the `evm-trace` library:
-
-```python
-from evm_trace import CallType, get_calltree_from_geth_trace
-
-from ape import networks
-
-alchemy = networks.provider  # Assuming connected to Alchemy
-txn_hash = "0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d"
-receipt = alchemy.get_transaction(txn_hash)
-root_node_kwargs = {
-    "gas_cost": receipt.gas_used,
-    "gas_limit": receipt.gas_limit,
-    "address": receipt.receiver,
-    "calldata": receipt.data,
-    "value": receipt.value,
-    "call_type": CallType.CALL,
-    "failed": receipt.failed,
-}
-trace_frame_iter = alchemy.get_transaction_trace(txn_hash)
-call_tree = get_calltree_from_geth_trace(trace_frame_iter)
-```
