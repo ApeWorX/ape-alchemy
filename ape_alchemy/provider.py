@@ -73,6 +73,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
         network_formats_by_ecosystem = {
             "ethereum": "https://eth-{0}.g.alchemy.com/v2/{1}",
             "arbitrum": "https://arb-{0}.g.alchemy.com/v2/{1}",
+            "base": "https://base-{0}.g.alchemy.com/v2/{1}",
             "optimism": "https://opt-{0}.g.alchemy.com/v2/{1}",
             "polygon": "https://polygon-{0}.g.alchemy.com/v2/{1}",
         }
@@ -91,10 +92,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
         try:
             # Any chain that *began* as PoA needs the middleware for pre-merge blocks
             ethereum_goerli = 5
+            base = (8453, 84531)
             optimism = (10, 420)
             polygon = (137, 80001)
 
-            if self._web3.eth.chain_id in (ethereum_goerli, *optimism, *polygon):
+            if self._web3.eth.chain_id in (ethereum_goerli, *base, *optimism, *polygon):
                 self._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
             self._web3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
