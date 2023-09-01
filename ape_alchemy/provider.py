@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Iterator
 
 from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
 from ape.exceptions import (
@@ -9,13 +9,13 @@ from ape.exceptions import (
     VirtualMachineError,
 )
 from ape.logging import logger
-from ape.types import CallTreeNode
+from ape.types import CallTreeNode, TraceFrame
 from eth_typing import HexStr
 from ethpm_types import HexBytes
 from evm_trace import (
     ParityTraceList,
     get_calltree_from_geth_call_trace,
-    get_calltree_from_parity_trace,
+    get_calltree_from_parity_trace, create_trace_frames,
 )
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
@@ -104,6 +104,9 @@ class Alchemy(Web3Provider, UpstreamProvider):
     def disconnect(self):
         self._web3 = None
 
+    def _get_prestate_trace(self, txn_hash: str) -> Dict:
+        return self._debug_trace_transaction(txn_hash, "prestateTracer")
+
     def get_call_tree(self, txn_hash: str) -> CallTreeNode:
         try:
             return self._get_calltree_using_parity_style(txn_hash)
@@ -123,9 +126,12 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
     def _get_calltree_using_call_tracer(self, txn_hash: str) -> CallTreeNode:
         # Create trace frames using geth-style call tracer
-        calls = self._make_request("debug_traceTransaction", [txn_hash, {"tracer": "callTracer"}])
+        calls = self._debug_trace_transaction(txn_hash, "callTracer")
         evm_call = get_calltree_from_geth_call_trace(calls)
         return self._create_call_tree_node(evm_call, txn_hash=txn_hash)
+
+    def _debug_trace_transaction(self, txn_hash: str, tracer: str) -> Dict:
+        return self._make_request("debug_traceTransaction", [txn_hash, {"tracer": tracer}])
 
     def get_virtual_machine_error(self, exception: Exception, **kwargs) -> VirtualMachineError:
         txn = kwargs.get("txn")
