@@ -1,12 +1,12 @@
 import re
 
 import pytest
-from ape.exceptions import ContractLogicError
+from ape.exceptions import APINotImplementedError, ContractLogicError
 from ape.types import LogFilter
 from hexbytes import HexBytes
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 
-from ape_alchemy.provider import AlchemyFeatureNotAvailable, MissingProjectKeyError
+from ape_alchemy.provider import MissingProjectKeyError
 
 TXN_HASH = "0x3cef4aaa52b97b6b61aa32b3afcecb0d14f7862ca80fdc76504c37a9374645c4"
 
@@ -160,16 +160,9 @@ def test_estimate_gas_would_revert_no_message(token, alchemy_provider, mock_web3
         alchemy_provider.estimate_gas_cost(transaction)
 
 
-def test_feature_not_available(
-    alchemy_provider, mock_web3, txn_hash, feature_not_available_http_error
-):
-    mock_web3.provider.make_request.side_effect = feature_not_available_http_error
-    alchemy_provider._web3 = mock_web3
-
-    with pytest.raises(
-        AlchemyFeatureNotAvailable, match=feature_not_available_http_error.response.fixture_param
-    ):
-        _ = [t for t in alchemy_provider.get_transaction_trace(txn_hash)]
+def test_feature_not_available(alchemy_provider, txn_hash):
+    with pytest.raises(APINotImplementedError):
+        list(alchemy_provider.get_transaction_trace(txn_hash))
 
 
 def test_get_contract_logs(networks, alchemy_provider, mock_web3, block, log_filter):
