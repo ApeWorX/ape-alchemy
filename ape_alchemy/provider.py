@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Optional, Iterator
+from typing import Any, Dict, Optional
 
 from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
 from ape.exceptions import (
@@ -9,13 +9,13 @@ from ape.exceptions import (
     VirtualMachineError,
 )
 from ape.logging import logger
-from ape.types import CallTreeNode, TraceFrame
+from ape.types import CallTreeNode
 from eth_typing import HexStr
 from ethpm_types import HexBytes
 from evm_trace import (
     ParityTraceList,
     get_calltree_from_geth_call_trace,
-    get_calltree_from_parity_trace, create_trace_frames,
+    get_calltree_from_parity_trace,
 )
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
