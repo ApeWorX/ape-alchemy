@@ -191,27 +191,6 @@ Parity traces are faster and thus are the ones uses in Ethereum receipts’ <cod
 </pre></div>
 </div>
 <p>To learn more about transaction traces, view <a class="reference external" href="https://docs.apeworx.io/ape/stable/userguides/transactions.html#traces">Ape’s transaction guide</a>.</p>
-<p><strong>NOTE</strong>: If you require the Geth style traces, you still have access to them via the <code class="docutils literal notranslate"><span class="pre">get_transaction_trace()</span></code> method and utilities from the <code class="docutils literal notranslate"><span class="pre">evm-trace</span></code> library:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">evm_trace</span> <span class="kn">import</span> <span class="n">CallType</span><span class="p">,</span> <span class="n">get_calltree_from_geth_trace</span>
-
-<span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
-
-<span class="n">alchemy</span> <span class="o">=</span> <span class="n">networks</span><span class="o">.</span><span class="n">provider</span>  <span class="c1"># Assuming connected to Alchemy</span>
-<span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">&quot;0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d&quot;</span>
-<span class="n">receipt</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_transaction</span><span class="p">(</span><span class="n">txn_hash</span><span class="p">)</span>
-<span class="n">root_node_kwargs</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;gas_cost&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">gas_used</span><span class="p">,</span>
-    <span class="s2">&quot;gas_limit&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">gas_limit</span><span class="p">,</span>
-    <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">receiver</span><span class="p">,</span>
-    <span class="s2">&quot;calldata&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-    <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-    <span class="s2">&quot;call_type&quot;</span><span class="p">:</span> <span class="n">CallType</span><span class="o">.</span><span class="n">CALL</span><span class="p">,</span>
-    <span class="s2">&quot;failed&quot;</span><span class="p">:</span> <span class="n">receipt</span><span class="o">.</span><span class="n">failed</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="n">trace_frame_iter</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_transaction_trace</span><span class="p">(</span><span class="n">txn_hash</span><span class="p">)</span>
-<span class="n">call_tree</span> <span class="o">=</span> <span class="n">get_calltree_from_geth_trace</span><span class="p">(</span><span class="n">trace_frame_iter</span><span class="p">)</span>
-</pre></div>
-</div>
 </section>
 </section>
 </section>
