@@ -13,9 +13,10 @@ extras_require = {
         "pytest-cov",  # Coverage analyzer plugin
         "pytest-mock",  # For creating mocks
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
+        "websocket-client",  # Used for web socket integration testing
     ],
     "lint": [
-        "black>=23.7.0,<24",  # auto-formatter and linter
+        "black>=23.9.1,<24",  # auto-formatter and linter
         "mypy>=1.5.1,<2",  # Static type analyzer
         "types-requests",  # Needed due to mypy typeshed
         "types-setuptools",  # Needed due to mypy typeshed
