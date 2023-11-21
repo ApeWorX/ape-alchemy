@@ -10,8 +10,8 @@ from ape.exceptions import (
 )
 from ape.logging import logger
 from ape.types import CallTreeNode
+from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
-from ethpm_types import HexBytes
 from evm_trace import (
     ParityTraceList,
     get_calltree_from_geth_call_trace,
@@ -182,7 +182,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
         try:
             return super()._make_request(endpoint, parameters)
         except HTTPError as err:
-            response_data = err.response.json()
+            response_data = err.response.json() if err.response else {}
             if "error" not in response_data:
                 raise AlchemyProviderError(str(err)) from err
 

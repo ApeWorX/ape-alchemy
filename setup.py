@@ -16,8 +16,8 @@ extras_require = {
         "websocket-client",  # Used for web socket integration testing
     ],
     "lint": [
-        "black>=23.9.1,<24",  # auto-formatter and linter
-        "mypy>=1.5.1,<2",  # Static type analyzer
+        "black>=23.11.0,<24",  # auto-formatter and linter
+        "mypy>=1.7.0,<2",  # Static type analyzer
         "types-requests",  # Needed due to mypy typeshed
         "types-setuptools",  # Needed due to mypy typeshed
         "flake8>=6.1.0,<7",  # Style linter
@@ -74,7 +74,10 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.6.5,<0.7",
+        "eth-ape>=0.7.0,<0.8",
+        "eth_pydantic_types",  # Get eth_pydantic_types version from ape
+        "ethpm-types",  # Get ethpm version from ape
+        "evm_trace",  # Get evm_trace version from ape
         "web3",  # Get web3 version from ape
         "requests",
     ],
