@@ -7,9 +7,9 @@ extras_require = {
         "ape-arbitrum",  # Needed for testing Arbitrum integration
         "ape-base",  # Needed for testing Base integration
         "ape-optimism",  # Needed for testing Optimism integration
-        "ape-polygon",  # Neblack .eded for testing Polygon integration
+        "ape-polygon",  # Needed for testing Polygon integration
         "pytest>=6.0",  # Core testing package
-        "pytest-xdist",  # multi-process runner
+        "pytest-xdist",  # Multi-process runner
         "pytest-cov",  # Coverage analyzer plugin
         "pytest-mock",  # For creating mocks
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
@@ -17,10 +17,12 @@ extras_require = {
     ],
     "lint": [
         "black>=23.11.0,<24",  # Auto-formatter and linter
-        "mypy>=1.7.0,<2",  # Static type analyzer
-        "types-requests",  # Needed for mypy type shed
+        "mypy>=1.7.1,<2",  # Static type analyzer
         "types-setuptools",  # Needed for mypy type shed
+        "types-requests",  # Needed for mypy type shed
         "flake8>=6.1.0,<7",  # Style linter
+        "flake8-breakpoint>=1.1.0,<2",  # Detect breakpoints left in code
+        "flake8-print>=5.0.0,<6",  # Detect print statements left in code
         "isort>=5.10.1,<6",  # Import sorting linter
         "mdformat>=0.7.17",  # Auto-formatter for markdown
         "mdformat-gfm>=0.3.5",  # Needed for formatting GitHub-flavored markdown
@@ -74,10 +76,10 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.7.0,<0.8",
-        "eth_pydantic_types",  # Get eth_pydantic_types version from ape
-        "ethpm-types",  # Get ethpm version from ape
-        "evm_trace",  # Get evm_trace version from ape
+        "eth-ape",  # >=0.7.0,<0.8",
+        "eth-pydantic-types",  # Get eth-pydantic-types version from ape
+        "ethpm-types",  # Get ethpm-types version from ape
+        "evm-trace",  # Get evm-trace version from ape
         "web3",  # Get web3 version from ape
         "requests",
     ],

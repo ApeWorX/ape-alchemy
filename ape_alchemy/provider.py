@@ -1,7 +1,7 @@
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
-from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
+from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider
 from ape.exceptions import (
     APINotImplementedError,
     ContractLogicError,
@@ -10,6 +10,7 @@ from ape.exceptions import (
 )
 from ape.logging import logger
 from ape.types import CallTreeNode
+from ape_ethereum.provider import Web3Provider
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
 from evm_trace import (
@@ -178,7 +179,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return VirtualMachineError(message=message, txn=txn)
 
-    def _make_request(self, endpoint: str, parameters: list) -> Any:
+    def _make_request(self, endpoint: str, parameters: Optional[List] = None) -> Any:
         try:
             return super()._make_request(endpoint, parameters)
         except HTTPError as err:
