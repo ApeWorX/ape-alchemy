@@ -133,7 +133,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
     def _get_calltree_using_parity_style(self, txn_hash: str) -> CallTreeNode:
         raw_trace_list = self._make_request("trace_transaction", [txn_hash])
-        trace_list = ParityTraceList.parse_obj(raw_trace_list)
+        trace_list = ParityTraceList.model_validate(raw_trace_list)
         evm_call = get_calltree_from_parity_trace(trace_list)
         return self._create_call_tree_node(evm_call)
 
