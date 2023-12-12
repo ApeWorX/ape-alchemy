@@ -16,7 +16,7 @@ extras_require = {
         "websocket-client",  # Used for web socket integration testing
     ],
     "lint": [
-        "black>=23.11.0,<24",  # Auto-formatter and linter
+        "black>=23.12.0,<24",  # Auto-formatter and linter
         "mypy>=1.7.1,<2",  # Static type analyzer
         "types-setuptools",  # Needed for mypy type shed
         "types-requests",  # Needed for mypy type shed
@@ -77,10 +77,10 @@ setup(
     include_package_data=True,
     install_requires=[
         "eth-ape>=0.7.0,<0.8",
-        "eth-pydantic-types",  # Get eth-pydantic-types version from ape
-        "ethpm-types",  # Get ethpm-types version from ape
-        "evm-trace",  # Get evm-trace version from ape
-        "web3",  # Get web3 version from ape
+        "eth-pydantic-types",  # Use same version as eth-ape
+        "ethpm-types",  # Use same version as eth-ape
+        "evm-trace",  # Use same version as eth-ape
+        "web3",  # Use same version as eth-ape
         "requests",
     ],
     python_requires=">=3.8,<4",
