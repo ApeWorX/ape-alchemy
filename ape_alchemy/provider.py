@@ -1,7 +1,7 @@
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
-from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider, Web3Provider
+from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider
 from ape.exceptions import (
     APINotImplementedError,
     ContractLogicError,
@@ -10,8 +10,9 @@ from ape.exceptions import (
 )
 from ape.logging import logger
 from ape.types import CallTreeNode
+from ape_ethereum.provider import Web3Provider
+from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
-from ethpm_types import HexBytes
 from evm_trace import (
     ParityTraceList,
     get_calltree_from_geth_call_trace,
@@ -132,7 +133,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
     def _get_calltree_using_parity_style(self, txn_hash: str) -> CallTreeNode:
         raw_trace_list = self._make_request("trace_transaction", [txn_hash])
-        trace_list = ParityTraceList.parse_obj(raw_trace_list)
+        trace_list = ParityTraceList.model_validate(raw_trace_list)
         evm_call = get_calltree_from_parity_trace(trace_list)
         return self._create_call_tree_node(evm_call)
 
@@ -178,11 +179,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return VirtualMachineError(message=message, txn=txn)
 
-    def _make_request(self, endpoint: str, parameters: list) -> Any:
+    def _make_request(self, endpoint: str, parameters: Optional[List] = None) -> Any:
         try:
             return super()._make_request(endpoint, parameters)
         except HTTPError as err:
-            response_data = err.response.json()
+            response_data = err.response.json() if err.response else {}
             if "error" not in response_data:
                 raise AlchemyProviderError(str(err)) from err
 

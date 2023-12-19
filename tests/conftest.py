@@ -30,13 +30,14 @@ def networks():
 
 
 @pytest.fixture
-def missing_token(mocker):
+def missing_token(alchemy_provider, mocker):
     env = os.environ.copy()
     mock = mocker.patch("os.environ.get")
 
     def side_effect(key, *args, **kwargs):
         return None if "WEB3" in key else env.get(key, *args, **kwargs)
 
+    alchemy_provider.network_uris = {}
     mock.side_effect = side_effect
     return mock
 
