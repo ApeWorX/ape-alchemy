@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quick Start &mdash; ape-alchemy  documentation</title>
@@ -11,16 +11,16 @@
       <link rel="stylesheet" href="/ape-alchemy/latest/_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="/ape-alchemy/latest/_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="/ape-alchemy/latest/_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="canonical" href="/ape-alchemy/userguides/quickstart.html" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <script src="../_static/custom.js"></script>
   <script>
@@ -38,7 +38,6 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../index.html" class="icon icon-home"> ape-alchemy
-            <img src="../_static/logo.gif" class="logo" alt="Logo"/>
           </a>
 
           <div class="version">
@@ -106,7 +105,7 @@
            <div itemprop="articleBody">
              
   <section id="quick-start">
-<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline"></a></h1>
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this heading"></a></h1>
 <p>Use the <a class="reference external" href="https://alchemy.com/?r=jk3NDM0MTIwODIzM">Alchemy</a> provider plugin to interact with blockchains via APIs.
 The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</span></code> plugin supports the following ecosystems:</p>
 <ul class="simple">
@@ -117,22 +116,22 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 <li><p>Polygon</p></li>
 </ul>
 <section id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.python.org/downloads">python3</a> version 3.8 up to 3.11.</p></li>
 </ul>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
 <section id="via-pip">
-<h3>via <code class="docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#via-pip" title="Permalink to this headline"></a></h3>
+<h3>via <code class="docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#via-pip" title="Permalink to this heading"></a></h3>
 <p>You can install the latest release via <a class="reference external" href="https://pypi.org/project/pip/"><code class="docutils literal notranslate"><span class="pre">pip</span></code></a>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ape-alchemy
 </pre></div>
 </div>
 </section>
 <section id="via-setuptools">
-<h3>via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code><a class="headerlink" href="#via-setuptools" title="Permalink to this headline"></a></h3>
+<h3>via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code><a class="headerlink" href="#via-setuptools" title="Permalink to this heading"></a></h3>
 <p>You can clone the repository and use <a class="reference external" href="https://github.com/pypa/setuptools"><code class="docutils literal notranslate"><span class="pre">setuptools</span></code></a> for the most up-to-date version:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ApeWorX/ape-alchemy.git
 <span class="nb">cd</span><span class="w"> </span>ape-alchemy
@@ -142,7 +141,7 @@ python3<span class="w"> </span>setup.py<span class="w"> </span>install
 </section>
 </section>
 <section id="quick-usage">
-<h2>Quick Usage<a class="headerlink" href="#quick-usage" title="Permalink to this headline"></a></h2>
+<h2>Quick Usage<a class="headerlink" href="#quick-usage" title="Permalink to this heading"></a></h2>
 <p>First, make sure you have one of the following environment variables set (it doesn’t matter which one):</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">WEB3_ALCHEMY_PROJECT_ID</span></code></p></li>
@@ -171,7 +170,7 @@ python3<span class="w"> </span>setup.py<span class="w"> </span>install
 </pre></div>
 </div>
 <section id="transaction-traces">
-<h3>Transaction Traces<a class="headerlink" href="#transaction-traces" title="Permalink to this headline"></a></h3>
+<h3>Transaction Traces<a class="headerlink" href="#transaction-traces" title="Permalink to this heading"></a></h3>
 <p>If you are using a paid tier of Alchemy, you have access to both Geth and Parity style traces.
 Parity traces are faster and thus are the ones uses in Ethereum receipts’ <code class="docutils literal notranslate"><span class="pre">show_trace()</span></code> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
