@@ -77,22 +77,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
     A web3 provider using an HTTP connection to Alchemy.
 
     Docs: https://docs.alchemy.com/alchemy/
-
-    Fields
-    ------
-        concurrency: int
-            The maximum number of concurrent requests to make.
-            Defaults to 1.
-        block_page_size: int
-            The maximum number of blocks to fetch in a single request.
-            Defaults to 250_000.
-        network_uris: Dict[tuple, str]
-            A mapping of (ecosystem_name, network_name) -> URI
     """
-
-    concurrency: int = 1  # can't do exponential backoff with multiple threads
-    block_page_size: int = 250_000  # this acts as an upper limit, safe to set very high
-    network_uris: Dict[tuple, str] = {}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
