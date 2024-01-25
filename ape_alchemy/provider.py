@@ -38,28 +38,21 @@ PRIVATE_TX_BLOCK_WAIT = 25
 class AlchemyConfig(PluginConfig):
     """Configuration for Alchemy.
 
-    Fields
-    ------
-        concurrency: int
-            The maximum number of concurrent requests to make.
+
+    Attributes:
+        concurrency (int): The maximum number of concurrent requests to make.
             Defaults to 1.
-        block_page_size: int
-            The maximum number of blocks to fetch in a single request.
-            Defaults to 250_000.
-        min_retry_delay: int
-            The amount of milliseconds to wait before retrying the request.
-            Defaults to one second.
-        retry_backoff_factor: int
-            The multiplier applied to the retry delay after each failed attempt.
-            Defaults to two.
-        max_retry_delay: int
-            The maximum length of the retry delay.
-            Defaults to 30 seconds.
-        max_retries: int
-            The maximum number of retries.
+        block_page_size (int): The maximum number of blocks to fetch in a single request.
+            Defaults to 250,000.
+        min_retry_delay (int): The amount of milliseconds to wait before retrying the request.
+            Defaults to 1000 (one second).
+        retry_backoff_factor (int): The multiplier applied to the retry delay after each failed attempt.
+            Defaults to 2.
+        max_retry_delay (int): The maximum length of the retry delay.
+            Defaults to 30,000 (30 seconds).
+        max_retries (int): The maximum number of retries.
             Defaults to 3.
-        retry_jitter: int
-            A random number of milliseconds up to this limit is added to each retry delay.
+        retry_jitter (int): A random number of milliseconds up to this limit is added to each retry delay.
             Defaults to 250 milliseconds.
     """
 
