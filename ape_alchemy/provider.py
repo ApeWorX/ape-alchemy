@@ -71,14 +71,19 @@ class Alchemy(Web3Provider, UpstreamProvider):
     A web3 provider using an HTTP connection to Alchemy.
 
     Docs: https://docs.alchemy.com/alchemy/
+
+    Args:
+        network_uris: Dict[tuple, str]
+            A mapping of (ecosystem_name, network_name) -> URI
     """
+
+    network_uris: Dict[tuple, str] = {}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         alchemy_config = cast(AlchemyConfig, self.config_manager.get_config("alchemy"))
         self.concurrency = alchemy_config.concurrency
         self.block_page_size = alchemy_config.block_page_size
-        self.network_uris = {}
 
     @property
     def uri(self):
