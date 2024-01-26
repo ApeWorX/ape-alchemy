@@ -47,14 +47,14 @@ class AlchemyConfig(PluginConfig):
             Defaults to 250,000.
         min_retry_delay (int): The amount of milliseconds to wait before retrying the request.
             Defaults to 1000 (one second).
-        retry_backoff_factor (int): The multiplier applied to the retry delay after each failed attempt.
-            Defaults to 2.
+        retry_backoff_factor (int): The multiplier applied to the retry delay after each failed
+            attempt. Defaults to 2.
         max_retry_delay (int): The maximum length of the retry delay.
             Defaults to 30,000 (30 seconds).
         max_retries (int): The maximum number of retries.
             Defaults to 3.
-        retry_jitter (int): A random number of milliseconds up to this limit is added to each retry delay.
-            Defaults to 250 milliseconds.
+        retry_jitter (int): A random number of milliseconds up to this limit is added to each retry
+            delay. Defaults to 250 milliseconds.
     """
 
     concurrency: int = 1  # can't do exponential backoff with multiple threads
