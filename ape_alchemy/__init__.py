@@ -2,7 +2,6 @@ from ape import plugins
 
 from .provider import Alchemy, AlchemyConfig
 
-
 NETWORKS = {
     "ethereum": [
         "mainnet",
