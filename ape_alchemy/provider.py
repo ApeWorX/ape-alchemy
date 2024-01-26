@@ -78,6 +78,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
         alchemy_config = cast(AlchemyConfig, self.config_manager.get_config("alchemy"))
         self.concurrency = alchemy_config.concurrency
         self.block_page_size = alchemy_config.block_page_size
+        self.network_uris = {}
 
     @property
     def uri(self):
