@@ -39,7 +39,6 @@ PRIVATE_TX_BLOCK_WAIT = 25
 class AlchemyConfig(PluginConfig):
     """Configuration for Alchemy.
 
-
     Attributes:
         concurrency (int): The maximum number of concurrent requests to make.
             Defaults to 1.
@@ -58,7 +57,7 @@ class AlchemyConfig(PluginConfig):
     """
 
     concurrency: int = 1  # can't do exponential backoff with multiple threads
-    block_page_size: int = 250_000  # this acts as an upper limit, safe to set very high
+    block_page_size: int = 25_000_000  # this acts as an upper limit, safe to set very high
     min_retry_delay: int = 1_000  # 1 second
     retry_backoff_factor: int = 2  # exponential backoff
     max_retry_delay: int = 30_000  # 30 seconds
