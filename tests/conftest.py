@@ -13,7 +13,7 @@ FEATURE_NOT_AVAILABLE_BECAUSE_OF_TIER_RESPONSE = (
     "https://docs.alchemy.com/alchemy/documentation/apis"
 )
 FEATURE_NOT_AVAILABLE_BECAUSE_OF_NETWORK_RESPONSE = (
-    "trace_transaction is not available on the ETH_GOERLI. "
+    "trace_transaction is not available on the ETH_SEPOLIA. "
     "For more information see our docs: "
     "https://docs.alchemy.com/alchemy/documentation/apis/ethereum"
 )
