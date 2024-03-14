@@ -92,4 +92,4 @@ def feature_not_available_http_error(mocker, request):
 
 @pytest.fixture
 def alchemy_provider(networks) -> Alchemy:
-    return networks.ethereum.goerli.get_provider("alchemy")
+    return networks.ethereum.sepolia.get_provider("alchemy")
