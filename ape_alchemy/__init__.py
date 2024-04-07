@@ -21,7 +21,7 @@ NETWORKS = {
     ],
     "polygon": [
         "mainnet",
-        "mumbai",
+        "amoy",
     ],
 }
 
