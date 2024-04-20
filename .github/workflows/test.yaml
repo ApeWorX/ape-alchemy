@@ -99,7 +99,7 @@ jobs:
             WEB3_OPTIMISM_GOERLI_ALCHEMY_API_KEY: ${{ secrets.WEB3_OPTIMISM_GOERLI_ALCHEMY_API_KEY }}
             WEB3_OPTIMISM_SEPOLIA_ALCHEMY_API_KEY: ${{ secrets.WEB3_OPTIMISM_SEPOLIA_ALCHEMY_API_KEY }}
             WEB3_POLYGON_MAINNET_ALCHEMY_API_KEY: ${{ secrets.WEB3_POLYGON_MAINNET_ALCHEMY_API_KEY }}
-            WEB3_POLYGON_MUMBAI_ALCHEMY_API_KEY: ${{ secrets.WEB3_POLYGON_MUMBAI_ALCHEMY_API_KEY }}
+            WEB3_POLYGON_AMOY_ALCHEMY_API_KEY: ${{ secrets.WEB3_POLYGON_AMOY_ALCHEMY_API_KEY }}
 
 # NOTE: uncomment this block after you've marked tests with @pytest.mark.fuzzing
 #    fuzzing:
