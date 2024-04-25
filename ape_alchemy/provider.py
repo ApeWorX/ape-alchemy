@@ -102,11 +102,12 @@ class Alchemy(Web3Provider, UpstreamProvider):
         self._web3 = Web3(HTTPProvider(self.uri))
         try:
             # Any chain that *began* as PoA needs the middleware for pre-merge blocks
+            ethereum_sepolia = 11155111
             base = 8453
             optimism = 10
             polygon = 137
 
-            if self._web3.eth.chain_id in (base, optimism, polygon):
+            if self._web3.eth.chain_id in (ethereum_sepolia, base, optimism, polygon):
                 self._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
             self._web3.eth.set_gas_price_strategy(rpc_gas_price_strategy)

@@ -59,7 +59,7 @@ export WEB3_ALCHEMY_PROJECT_ID=MY_API_TOKEN=<value-of-secret-key>
 To use the Alchemy provider plugin in most commands, set it via the `--network` option:
 
 ```bash
-ape console --network ethereum:goerli:alchemy
+ape console --network ethereum:sepolia:alchemy
 ```
 
 To connect to Alchemy from a Python script, use the `networks` top-level manager:
