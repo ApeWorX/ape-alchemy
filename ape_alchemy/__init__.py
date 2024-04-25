@@ -5,27 +5,23 @@ from .provider import Alchemy
 NETWORKS = {
     "ethereum": [
         "mainnet",
-        "goerli",
         "sepolia",
     ],
     "arbitrum": [
         "mainnet",
-        "goerli",
         "sepolia",
     ],
     "base": [
         "mainnet",
-        "goerli",
         "sepolia",
     ],
     "optimism": [
         "mainnet",
-        "goerli",
         "sepolia",
     ],
     "polygon": [
         "mainnet",
-        "mumbai",
+        "amoy",
     ],
 }
 
