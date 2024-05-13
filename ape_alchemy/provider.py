@@ -1,7 +1,9 @@
 import os
-from typing import Any, Dict, List, Optional
+import random
+import time
+from typing import Any, Dict, List, Optional, cast
 
-from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider
+from ape.api import PluginConfig, ReceiptAPI, TransactionAPI, UpstreamProvider
 from ape.exceptions import (
     APINotImplementedError,
     ContractLogicError,
@@ -34,14 +36,56 @@ DEFAULT_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_A
 PRIVATE_TX_BLOCK_WAIT = 25
 
 
+class AlchemyConfig(PluginConfig):
+    """Configuration for Alchemy.
+
+    Attributes:
+        concurrency (int): The maximum number of concurrent requests to make.
+            Defaults to 1.
+        block_page_size (int): The maximum number of blocks to fetch in a single request.
+            Defaults to 250,000.
+        min_retry_delay (int): The amount of milliseconds to wait before retrying the request.
+            Defaults to 1000 (one second).
+        retry_backoff_factor (int): The multiplier applied to the retry delay after each failed
+            attempt. Defaults to 2.
+        max_retry_delay (int): The maximum length of the retry delay.
+            Defaults to 30,000 (30 seconds).
+        max_retries (int): The maximum number of retries.
+            Defaults to 3.
+        retry_jitter (int): A random number of milliseconds up to this limit is added to each retry
+            delay. Defaults to 250 milliseconds.
+    """
+
+    concurrency: int = 1  # can't do exponential backoff with multiple threads
+    block_page_size: int = 25_000_000  # this acts as an upper limit, safe to set very high
+    min_retry_delay: int = 1_000  # 1 second
+    retry_backoff_factor: int = 2  # exponential backoff
+    max_retry_delay: int = 30_000  # 30 seconds
+    max_retries: int = 3
+    retry_jitter: int = 250  # 250 milliseconds
+
+
 class Alchemy(Web3Provider, UpstreamProvider):
     """
     A web3 provider using an HTTP connection to Alchemy.
 
     Docs: https://docs.alchemy.com/alchemy/
+
+    Args:
+        network_uris: Dict[tuple, str]
+            A mapping of (ecosystem_name, network_name) -> URI
     """
 
     network_uris: Dict[tuple, str] = {}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        alchemy_config = cast(AlchemyConfig, self.config_manager.get_config("alchemy"))
+        self.concurrency = alchemy_config.concurrency
+        self.block_page_size = alchemy_config.block_page_size
+        # overwrite for testing
+        self.block_page_size = 5000
+        self.concurrency = 1
 
     @property
     def uri(self):
@@ -178,26 +222,75 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return VirtualMachineError(message=message, txn=txn)
 
-    def _make_request(self, endpoint: str, parameters: Optional[List] = None) -> Any:
-        try:
-            return super()._make_request(endpoint, parameters)
-        except HTTPError as err:
-            response_data = err.response.json() if err.response else {}
-            if "error" not in response_data:
-                raise AlchemyProviderError(str(err)) from err
+    def _make_request(
+        self,
+        endpoint: str,
+        parameters: Optional[List] = None,
+        min_retry_delay: Optional[int] = None,
+        retry_backoff_factor: Optional[int] = None,
+        max_retry_delay: Optional[int] = None,
+        max_retries: Optional[int] = None,
+        retry_jitter: Optional[int] = None,
+    ) -> Any:
+        alchemy_config = cast(AlchemyConfig, self.config_manager.get_config("alchemy"))
+        min_retry_delay = (
+            min_retry_delay if min_retry_delay is not None else alchemy_config.min_retry_delay
+        )
+        retry_backoff_factor = (
+            retry_backoff_factor
+            if retry_backoff_factor is not None
+            else alchemy_config.retry_backoff_factor
+        )
+        max_retry_delay = (
+            max_retry_delay if max_retry_delay is not None else alchemy_config.max_retry_delay
+        )
+        max_retries = max_retries if max_retries is not None else alchemy_config.max_retries
+        retry_jitter = retry_jitter if retry_jitter is not None else alchemy_config.retry_jitter
+        for attempt in range(max_retries):
+            try:
+                return super()._make_request(endpoint, parameters)
+            except HTTPError as err:
+                # safely get response date
+                response_data = err.response.json() if err.response else {}
 
-            error_data = response_data["error"]
-            message = (
-                error_data.get("message", str(error_data))
-                if isinstance(error_data, dict)
-                else error_data
-            )
-            cls = (
-                AlchemyFeatureNotAvailable
-                if "is not available" in message
-                else AlchemyProviderError
-            )
-            raise cls(message) from err
+                # check if we have an error message, otherwise throw an error
+                if "error" not in response_data:
+                    raise AlchemyProviderError(str(err)) from err
+
+                # safely get error message
+                error_data = response_data["error"]
+                message = (
+                    error_data.get("message", str(error_data))
+                    if isinstance(error_data, dict)
+                    else error_data
+                )
+
+                # handle known error messages and continue
+                if any(
+                    error in message
+                    for error in ["exceeded its compute units", "Too Many Requests for url"]
+                ):
+                    retry_interval = min(
+                        max_retry_delay, min_retry_delay * retry_backoff_factor**attempt
+                    )
+                    logger.info(
+                        "Alchemy compute units exceeded, retrying, attempt %s/%s in %s ms",
+                        attempt + 1,
+                        max_retries,
+                        retry_interval,
+                    )
+                    delay = retry_interval + random.randint(0, retry_jitter)
+                    time.sleep(delay / 1000)
+                    continue
+
+                # freak out if we get here
+                cls = (
+                    AlchemyFeatureNotAvailable
+                    if "is not available" in message
+                    else AlchemyProviderError
+                )
+                raise cls(message) from err
+        raise AlchemyProviderError(f"Rate limit exceeded after {max_retries} attempts.")
 
     def send_private_transaction(self, txn: TransactionAPI, **kwargs) -> ReceiptAPI:
         """
