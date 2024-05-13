@@ -83,6 +83,9 @@ class Alchemy(Web3Provider, UpstreamProvider):
         alchemy_config = cast(AlchemyConfig, self.config_manager.get_config("alchemy"))
         self.concurrency = alchemy_config.concurrency
         self.block_page_size = alchemy_config.block_page_size
+        # overwrite for testing
+        self.block_page_size = 5000
+        self.concurrency = 1
 
     @property
     def uri(self):
@@ -248,7 +251,22 @@ class Alchemy(Web3Provider, UpstreamProvider):
             try:
                 return super()._make_request(endpoint, parameters)
             except HTTPError as err:
-                message = str(err)
+                # safely get response date
+                response_data = err.response.json() if err.response else {}
+
+                # check if we have an error message, otherwise throw an error
+                if "error" not in response_data:
+                    raise AlchemyProviderError(str(err)) from err
+
+                # safely get error message
+                error_data = response_data["error"]
+                message = (
+                    error_data.get("message", str(error_data))
+                    if isinstance(error_data, dict)
+                    else error_data
+                )
+
+                # handle known error messages and continue
                 if any(
                     error in message
                     for error in ["exceeded its compute units", "Too Many Requests for url"]
@@ -265,8 +283,8 @@ class Alchemy(Web3Provider, UpstreamProvider):
                     delay = retry_interval + random.randint(0, retry_jitter)
                     time.sleep(delay / 1000)
                     continue
-                elif "error" not in message:
-                    raise AlchemyProviderError(str(err)) from err
+
+                # freak out if we get here
                 cls = (
                     AlchemyFeatureNotAvailable
                     if "is not available" in message
