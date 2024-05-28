@@ -6,6 +6,7 @@ from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
 from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
 from ape.logging import logger
 from ape_ethereum.provider import Web3Provider
+from ape_ethereum.trace import TransactionTrace
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
 from requests import HTTPError
@@ -115,7 +116,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
         if "debug_trace_transaction_parameters" not in kwargs:
             kwargs["debug_trace_transaction_parameters"] = {}
 
-        return self._get_transaction_trace(transaction_hash, **kwargs)
+        return TransactionTrace(transaction_hash=transaction_hash, **kwargs)
 
     def get_virtual_machine_error(self, exception: Exception, **kwargs) -> VirtualMachineError:
         txn = kwargs.get("txn")
