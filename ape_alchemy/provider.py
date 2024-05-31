@@ -1,23 +1,14 @@
 import os
-from typing import Any, Dict, List, Optional
+from collections.abc import Iterable
+from typing import Any, Optional
 
-from ape.api import ReceiptAPI, TransactionAPI, UpstreamProvider
-from ape.exceptions import (
-    APINotImplementedError,
-    ContractLogicError,
-    ProviderError,
-    VirtualMachineError,
-)
+from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
+from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
 from ape.logging import logger
-from ape.types import CallTreeNode
 from ape_ethereum.provider import Web3Provider
+from ape_ethereum.trace import TransactionTrace
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
-from evm_trace import (
-    ParityTraceList,
-    get_calltree_from_geth_call_trace,
-    get_calltree_from_parity_trace,
-)
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
@@ -41,7 +32,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
     Docs: https://docs.alchemy.com/alchemy/
     """
 
-    network_uris: Dict[tuple, str] = {}
+    network_uris: dict[tuple, str] = {}
 
     @property
     def uri(self):
@@ -116,34 +107,16 @@ class Alchemy(Web3Provider, UpstreamProvider):
     def disconnect(self):
         self._web3 = None
 
-    def _get_prestate_trace(self, txn_hash: str) -> Dict:
-        return self._debug_trace_transaction(txn_hash, "prestateTracer")
+    def _get_prestate_trace(self, transaction_hash: str) -> dict:
+        return self.make_request(
+            "debug_traceTransaction", [transaction_hash, {"tracer": "prestateTracer"}]
+        )
 
-    def get_call_tree(self, txn_hash: str) -> CallTreeNode:
-        try:
-            return self._get_calltree_using_parity_style(txn_hash)
-        except Exception as err:
-            try:
-                return self._get_calltree_using_call_tracer(txn_hash)
-            except Exception:
-                pass
+    def get_transaction_trace(self, transaction_hash: str, **kwargs) -> TraceAPI:
+        if "debug_trace_transaction_parameters" not in kwargs:
+            kwargs["debug_trace_transaction_parameters"] = {}
 
-            raise APINotImplementedError() from err
-
-    def _get_calltree_using_parity_style(self, txn_hash: str) -> CallTreeNode:
-        raw_trace_list = self._make_request("trace_transaction", [txn_hash])
-        trace_list = ParityTraceList.model_validate(raw_trace_list)
-        evm_call = get_calltree_from_parity_trace(trace_list)
-        return self._create_call_tree_node(evm_call)
-
-    def _get_calltree_using_call_tracer(self, txn_hash: str) -> CallTreeNode:
-        # Create trace frames using geth-style call tracer
-        calls = self._debug_trace_transaction(txn_hash, "callTracer")
-        evm_call = get_calltree_from_geth_call_trace(calls)
-        return self._create_call_tree_node(evm_call, txn_hash=txn_hash)
-
-    def _debug_trace_transaction(self, txn_hash: str, tracer: str) -> Dict:
-        return self._make_request("debug_traceTransaction", [txn_hash, {"tracer": tracer}])
+        return TransactionTrace(transaction_hash=transaction_hash, **kwargs)
 
     def get_virtual_machine_error(self, exception: Exception, **kwargs) -> VirtualMachineError:
         txn = kwargs.get("txn")
@@ -178,9 +151,9 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return VirtualMachineError(message=message, txn=txn)
 
-    def _make_request(self, endpoint: str, parameters: Optional[List] = None) -> Any:
+    def make_request(self, endpoint: str, parameters: Optional[Iterable] = None) -> Any:
         try:
-            return super()._make_request(endpoint, parameters)
+            return super().make_request(endpoint, parameters)
         except HTTPError as err:
             response_data = err.response.json() if err.response else {}
             if "error" not in response_data:
@@ -225,7 +198,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
             params["preferences"] = kwargs
 
         try:
-            txn_hash = self._make_request("eth_sendPrivateTransaction", [params])
+            txn_hash = self.make_request("eth_sendPrivateTransaction", [params])
         except (ValueError, Web3ContractLogicError) as err:
             vm_err = self.get_virtual_machine_error(err, txn=txn)
             raise vm_err from err

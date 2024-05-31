@@ -1,7 +1,7 @@
 import re
 
 import pytest
-from ape.exceptions import APINotImplementedError, ContractLogicError
+from ape.exceptions import ContractLogicError
 from ape.types import LogFilter
 from hexbytes import HexBytes
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
@@ -160,11 +160,6 @@ def test_estimate_gas_would_revert_no_message(token, alchemy_provider, mock_web3
         alchemy_provider.estimate_gas_cost(transaction)
 
 
-def test_feature_not_available(alchemy_provider, txn_hash):
-    with pytest.raises(APINotImplementedError):
-        list(alchemy_provider.get_transaction_trace(txn_hash))
-
-
 def test_get_contract_logs(networks, alchemy_provider, mock_web3, block, log_filter):
     mock_web3.eth.get_block.return_value = block
     alchemy_provider._web3 = mock_web3
@@ -175,11 +170,12 @@ def test_get_contract_logs(networks, alchemy_provider, mock_web3, block, log_fil
     assert actual == []
 
 
-def test_get_call_tree(networks, alchemy_provider, mock_web3, parity_trace, receipt):
+def test_get_transaction_trace(networks, alchemy_provider, mock_web3, parity_trace, receipt):
     mock_web3.provider.make_request.return_value = [parity_trace]
     mock_web3.eth.wait_for_transaction_receipt.return_value = receipt
     alchemy_provider._web3 = mock_web3
     networks.active_provider = alchemy_provider
-    actual = repr(alchemy_provider.get_call_tree(TXN_HASH))
-    expected = r"0xC17f2C69aE2E66FD87367E3260412EEfF637F70E\.0x96d373e5\(\) \[1401584 gas\]"
+    trace = alchemy_provider.get_transaction_trace(TXN_HASH)
+    actual = repr(trace.get_calltree())
+    expected = r"CALL: 0xC17f2C69aE2E66FD87367E3260412EEfF637F70E\.<0x96d373e5\> \[1401584 gas\]"
     assert re.match(expected, actual)

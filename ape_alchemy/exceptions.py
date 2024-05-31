@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from ape.exceptions import ProviderError
 
 
@@ -21,6 +19,6 @@ class MissingProjectKeyError(AlchemyProviderError):
     An error raised when there is no API key set.
     """
 
-    def __init__(self, options: Tuple[str, ...]):
+    def __init__(self, options: tuple[str, ...]):
         env_var_str = ", ".join([f"${n}" for n in options])
         super().__init__(f"Must set one of {env_var_str}.")
