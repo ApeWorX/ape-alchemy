@@ -4,7 +4,7 @@ from ape import networks
 from ape.utils import ZERO_ADDRESS
 
 from ape_alchemy import NETWORKS
-from ape_alchemy.provider import Alchemy
+from ape_alchemy.provider import Alchemy, NETWORKS_SUPPORTING_WEBSOCKETS
 
 
 @pytest.fixture(params=[(name, net) for name, values in NETWORKS.items() for net in values])
@@ -23,6 +23,10 @@ def test_http(provider):
 
 
 def test_ws(provider):
+    if provider.network.ecosystem.name not in NETWORKS_SUPPORTING_WEBSOCKETS:
+        # Test will fail. Network does not support ws clients.
+        return
+
     assert provider.ws_uri.startswith("wss")
 
     try:
