@@ -3,10 +3,17 @@ from collections.abc import Iterable
 from typing import Any, Optional
 
 from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
-from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
+from ape.exceptions import (
+    APINotImplementedError,
+    ContractLogicError,
+    ProviderError,
+    VirtualMachineError,
+)
 from ape.logging import logger
+from ape.types import BlockID
 from ape_ethereum.provider import Web3Provider
 from ape_ethereum.trace import TransactionTrace
+from ape_ethereum.transactions import AccessList
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
 from requests import HTTPError
@@ -14,6 +21,7 @@ from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
+from web3.types import RPCEndpoint
 
 from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
 
@@ -23,6 +31,8 @@ DEFAULT_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_A
 
 # Alchemy will try to publish private transactions for 25 blocks.
 PRIVATE_TX_BLOCK_WAIT = 25
+
+NETWORKS_SUPPORTING_WEBSOCKETS = ("ethereum", "arbitrum", "base", "optimism", "polygon")
 
 
 class Alchemy(Web3Provider, UpstreamProvider):
@@ -46,7 +56,9 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         key = None
 
-        expected_env_var_prefix = f"WEB3_{ecosystem_name.upper()}_{network_name.upper()}_ALCHEMY"
+        ecosystem_nm_part = ecosystem_name.upper().replace("-", "_")
+        network_nm_part = network_name.upper().replace("-", "_")
+        expected_env_var_prefix = f"WEB3_{ecosystem_nm_part}_{network_nm_part}_ALCHEMY"
         options = (
             *DEFAULT_ENVIRONMENT_VARIABLE_NAMES,
             f"{expected_env_var_prefix}_PROJECT_ID",
@@ -68,6 +80,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
             "base": "https://base-{0}.g.alchemy.com/v2/{1}",
             "optimism": "https://opt-{0}.g.alchemy.com/v2/{1}",
             "polygon": "https://polygon-{0}.g.alchemy.com/v2/{1}",
+            "polygon-zkevm": "https://polygonzkevm-{0}.g.alchemy.com/v2/{1}",
         }
 
         network_format = network_formats_by_ecosystem[ecosystem_name]
@@ -84,6 +97,14 @@ class Alchemy(Web3Provider, UpstreamProvider):
     def ws_uri(self) -> str:
         # NOTE: Overriding `Web3Provider.ws_uri` implementation
         return "ws" + self.uri[4:]  # Remove `http` in default URI w/ `ws`
+
+    @property
+    def priority_fee(self) -> int:
+        if self.network.ecosystem.name == "polygon-zkevm":
+            # The error is only 400 with no info otherwise.
+            raise APINotImplementedError()
+
+        return super().priority_fee
 
     @property
     def connection_str(self) -> str:
@@ -151,9 +172,19 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return VirtualMachineError(message=message, txn=txn)
 
-    def make_request(self, endpoint: str, parameters: Optional[Iterable] = None) -> Any:
+    def create_access_list(
+        self, transaction: TransactionAPI, block_id: Optional[BlockID] = None
+    ) -> list[AccessList]:
+        if self.network.ecosystem.name == "polygon-zkevm":
+            # The error is only 400 with no info otherwise.
+            raise APINotImplementedError()
+
+        return super().create_access_list(transaction, block_id=block_id)
+
+    def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
+        parameters = parameters or []
         try:
-            return super().make_request(endpoint, parameters)
+            return self.web3.provider.make_request(RPCEndpoint(rpc), parameters)
         except HTTPError as err:
             response_data = err.response.json() if err.response else {}
             if "error" not in response_data:

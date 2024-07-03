@@ -8,6 +8,7 @@ extras_require = {
         "ape-base",  # Needed for testing Base integration
         "ape-optimism",  # Needed for testing Optimism integration
         "ape-polygon",  # Needed for testing Polygon integration
+        "ape-polygon-zkevm",  # Needed for testing Polygon-ZkEVM integration
         "pytest>=6.0",  # Core testing package
         "pytest-xdist",  # Multi-process runner
         "pytest-cov",  # Coverage analyzer plugin
@@ -17,10 +18,10 @@ extras_require = {
     ],
     "lint": [
         "black>=24.4.2,<25",  # Auto-formatter and linter
-        "mypy>=1.10.0,<2",  # Static type analyzer
+        "mypy>=1.10.1,<2",  # Static type analyzer
         "types-setuptools",  # Needed for mypy type shed
         "types-requests",  # Needed for mypy type shed
-        "flake8>=7.0.0,<8",  # Style linter
+        "flake8>=7.1.0,<8",  # Style linter
         "flake8-breakpoint>=1.1.0,<2",  # Detect breakpoints left in code
         "flake8-print>=5.0.0,<6",  # Detect print statements left in code
         "isort>=5.13.2,<6",  # Import sorting linter

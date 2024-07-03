@@ -23,6 +23,10 @@ NETWORKS = {
         "mainnet",
         "amoy",
     ],
+    "polygon-zkevm": [
+        "mainnet",
+        "cardona",
+    ],
 }
 
 
