@@ -46,7 +46,9 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         key = None
 
-        expected_env_var_prefix = f"WEB3_{ecosystem_name.upper()}_{network_name.upper()}_ALCHEMY"
+        ecosystem_nm_part = ecosystem_name.upper().replace("-", "_")
+        network_nm_part = network_name.upper().replace("-", "_")
+        expected_env_var_prefix = f"WEB3_{ecosystem_nm_part}_{network_nm_part}_ALCHEMY"
         options = (
             *DEFAULT_ENVIRONMENT_VARIABLE_NAMES,
             f"{expected_env_var_prefix}_PROJECT_ID",
@@ -68,6 +70,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
             "base": "https://base-{0}.g.alchemy.com/v2/{1}",
             "optimism": "https://opt-{0}.g.alchemy.com/v2/{1}",
             "polygon": "https://polygon-{0}.g.alchemy.com/v2/{1}",
+            "polygon-zkevm": "https://polygonzkevm-{0}.g.alchemy.com/v2/{1}",
         }
 
         network_format = network_formats_by_ecosystem[ecosystem_name]
