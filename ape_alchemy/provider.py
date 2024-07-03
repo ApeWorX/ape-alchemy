@@ -3,7 +3,12 @@ from collections.abc import Iterable
 from typing import Any, Optional
 
 from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
-from ape.exceptions import ContractLogicError, ProviderError, VirtualMachineError
+from ape.exceptions import (
+    APINotImplementedError,
+    ContractLogicError,
+    ProviderError,
+    VirtualMachineError,
+)
 from ape.logging import logger
 from ape_ethereum.provider import Web3Provider
 from ape_ethereum.trace import TransactionTrace
@@ -14,6 +19,7 @@ from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 from web3.middleware import geth_poa_middleware
+from web3.types import RPCEndpoint
 
 from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
 
@@ -91,6 +97,14 @@ class Alchemy(Web3Provider, UpstreamProvider):
         return "ws" + self.uri[4:]  # Remove `http` in default URI w/ `ws`
 
     @property
+    def priority_fee(self) -> int:
+        try:
+            return super().priority_fee
+        except Exception as err:
+            # Raise this error to avoid uncaught 404 from Alchemy.
+            raise APINotImplementedError() from err
+
+    @property
     def connection_str(self) -> str:
         return self.uri
 
@@ -156,9 +170,18 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return VirtualMachineError(message=message, txn=txn)
 
-    def make_request(self, endpoint: str, parameters: Optional[Iterable] = None) -> Any:
+    def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
+        # There is no clue whatsoever from not-implemented errors from polygon-zkevm,
+        # so we have to hardcode this.
+        if self.network.ecosystem.name == "polygon-zkevm" and rpc in (
+            "eth_createAccessList",
+            "eth_priorityFee",
+        ):
+            raise APINotImplementedError()
+
+        parameters = parameters or []
         try:
-            return super().make_request(endpoint, parameters)
+            return self.web3.provider.make_request(RPCEndpoint(rpc), parameters)
         except HTTPError as err:
             response_data = err.response.json() if err.response else {}
             if "error" not in response_data:

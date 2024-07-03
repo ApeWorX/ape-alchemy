@@ -1,10 +1,11 @@
 import pytest
 import websocket  # type: ignore
-from ape import networks
+from ape import accounts, networks
+from ape.exceptions import APINotImplementedError
 from ape.utils import ZERO_ADDRESS
 
 from ape_alchemy import NETWORKS
-from ape_alchemy.provider import Alchemy, NETWORKS_SUPPORTING_WEBSOCKETS
+from ape_alchemy.provider import NETWORKS_SUPPORTING_WEBSOCKETS, Alchemy
 
 
 @pytest.fixture(params=[(name, net) for name, values in NETWORKS.items() for net in values])
@@ -36,3 +37,15 @@ def test_ws(provider):
 
     except Exception as err:
         pytest.fail(f"Websocket URI not accessible. Reason: {err}")
+
+
+def test_polygon_zkevm():
+    # We noticed strange behavior on this network and thus called for more tests.
+    with networks.polygon_zkevm.cardona.use_provider("alchemy") as provider:
+        with pytest.raises(APINotImplementedError):
+            _ = provider.priority_fee
+
+        receiver = accounts.test_accounts[0]
+        tx = provider.network.ecosystem.create_transaction(receiver=receiver)
+        with pytest.raises(APINotImplementedError):
+            _ = provider.create_access_list(tx)
