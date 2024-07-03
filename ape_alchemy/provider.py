@@ -10,8 +10,10 @@ from ape.exceptions import (
     VirtualMachineError,
 )
 from ape.logging import logger
+from ape.types import BlockID
 from ape_ethereum.provider import Web3Provider
 from ape_ethereum.trace import TransactionTrace
+from ape_ethereum.transactions import AccessList
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
 from requests import HTTPError
@@ -98,11 +100,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
     @property
     def priority_fee(self) -> int:
-        try:
-            return super().priority_fee
-        except Exception as err:
-            # Raise this error to avoid uncaught 404 from Alchemy.
-            raise APINotImplementedError() from err
+        if self.network.ecosystem.name == "polygon-zkevm":
+            # The error is only 400 with no info otherwise.
+            raise APINotImplementedError()
+
+        return super().priority_fee
 
     @property
     def connection_str(self) -> str:
@@ -170,15 +172,16 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return VirtualMachineError(message=message, txn=txn)
 
-    def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
-        # There is no clue whatsoever from not-implemented errors from polygon-zkevm,
-        # so we have to hardcode this.
-        if self.network.ecosystem.name == "polygon-zkevm" and rpc in (
-            "eth_createAccessList",
-            "eth_priorityFee",
-        ):
+    def create_access_list(
+        self, transaction: TransactionAPI, block_id: Optional[BlockID] = None
+    ) -> list[AccessList]:
+        if self.network.ecosystem.name == "polygon-zkevm":
+            # The error is only 400 with no info otherwise.
             raise APINotImplementedError()
 
+        return super().create_access_list(transaction, block_id=block_id)
+
+    def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
         parameters = parameters or []
         try:
             return self.web3.provider.make_request(RPCEndpoint(rpc), parameters)
