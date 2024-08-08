@@ -49,3 +49,18 @@ def test_polygon_zkevm():
         tx = provider.network.ecosystem.create_transaction(receiver=receiver)
         with pytest.raises(APINotImplementedError):
             _ = provider.create_access_list(tx)
+
+
+def test_make_requeset_handles_result():
+    """
+    There was a bug where eth_call because ape-alchemy wasn't
+    handling the result from make_request properly.
+    """
+    tx = {
+        "to": "0x5576815a38A3706f37bf815b261cCc7cCA77e975",
+        "value": "0x0",
+        "data": "0x70a082310000000000000000000000005576815a38a3706f37bf815b261ccc7cca77e975",
+    }
+    with networks.polygon_zkevm.cardona.use_provider("alchemy") as provider:
+        result = provider.make_request("eth_call", [tx, "latest"])
+        assert not isinstance(result, dict)

@@ -184,7 +184,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
     def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
         parameters = parameters or []
         try:
-            return self.web3.provider.make_request(RPCEndpoint(rpc), parameters)
+            result = self.web3.provider.make_request(RPCEndpoint(rpc), parameters)
         except HTTPError as err:
             response_data = err.response.json() if err.response else {}
             if "error" not in response_data:
@@ -202,6 +202,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 else AlchemyProviderError
             )
             raise cls(message) from err
+
+        if isinstance(result, dict) and (res := result.get("result")):
+            return res
+
+        return result
 
     def send_private_transaction(self, txn: TransactionAPI, **kwargs) -> ReceiptAPI:
         """
