@@ -16,6 +16,9 @@ class AlchemyTransactionTrace(TransactionTrace):
             if abi := self.root_method_abi:
                 return self._ecosystem.decode_returndata(abi, output_bytes)
 
+            # ABI is not known.
+            return output_bytes
+
         return None
 
     @cached_property

@@ -1,5 +1,6 @@
 import pytest
 from ape import chain, networks
+from ethpm_types import ContractType
 
 
 @pytest.fixture(autouse=True)
@@ -19,6 +20,19 @@ def test_revert_message():
 def test_return_value():
     txn_hash = "0xe0897d735b67893648b20085ecef16232733425329df844292d5b2774cca436b"
     receipt = chain.history[txn_hash]
+
+    # Ensure the ABI is cached so we can decode the return value.
+    abi = [
+        {
+            "type": "function",
+            "name": "submit",
+            "stateMutability": "payable",
+            "inputs": [{"name": "_referral", "type": "address"}],
+            "outputs": [{"name": "", "type": "uint256"}],
+        }
+    ]
+    chain.contracts[receipt.receiver] = ContractType(abi=abi)
+
     actual = receipt.return_value
     expected = 1244617160572980465
     assert actual == expected
