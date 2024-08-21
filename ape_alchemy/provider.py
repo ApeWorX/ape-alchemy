@@ -24,6 +24,7 @@ from web3.middleware import geth_poa_middleware
 from web3.types import RPCEndpoint
 
 from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
+from .trace import AlchemyTransactionTrace
 
 # The user must either set one of these or an ENV VAR of the pattern:
 #  WEB3_<ECOSYSTEM>_<NETWORK>_PROJECT_ID or  WEB3_<ECOSYSTEM>_<NETWORK>_API_KEY
@@ -134,10 +135,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
         )
 
     def get_transaction_trace(self, transaction_hash: str, **kwargs) -> TraceAPI:
-        if "debug_trace_transaction_parameters" not in kwargs:
-            kwargs["debug_trace_transaction_parameters"] = {}
-
-        return TransactionTrace(transaction_hash=transaction_hash, **kwargs)
+        return AlchemyTransactionTrace(transaction_hash=transaction_hash, **kwargs)
 
     def get_virtual_machine_error(self, exception: Exception, **kwargs) -> VirtualMachineError:
         txn = kwargs.get("txn")
