@@ -1,9 +1,8 @@
 from functools import cached_property
 from typing import Any, Optional
-from hexbytes import HexBytes
 
-from ape_ethereum.trace import TransactionTrace, TraceApproach
-from evm_trace import CallTreeNode
+from ape_ethereum.trace import TraceApproach, TransactionTrace
+from hexbytes import HexBytes
 
 
 class AlchemyTransactionTrace(TransactionTrace):

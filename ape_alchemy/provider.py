@@ -12,7 +12,6 @@ from ape.exceptions import (
 from ape.logging import logger
 from ape.types import BlockID
 from ape_ethereum.provider import Web3Provider
-from ape_ethereum.trace import TransactionTrace
 from ape_ethereum.transactions import AccessList
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
