@@ -9,6 +9,7 @@ The `ape-alchemy` plugin supports the following ecosystems:
 - Optimism
 - Polygon
 - Polygon-ZkEVM
+- Fantom
 
 ## Dependencies
 
