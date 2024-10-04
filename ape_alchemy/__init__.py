@@ -27,6 +27,11 @@ NETWORKS = {
         "mainnet",
         "cardona",
     ],
+    "fantom": [
+        "opera",
+        "testnet",
+    ],
+
 }
 
 
