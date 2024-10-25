@@ -6,6 +6,7 @@ The `ape-alchemy` plugin supports the following ecosystems:
 - Ethereum
 - Arbitrum
 - Base
+- Fantom
 - Optimism
 - Polygon
 - Polygon-ZkEVM
