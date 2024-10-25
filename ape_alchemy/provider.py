@@ -86,8 +86,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         network_format = network_formats_by_ecosystem[ecosystem_name]
         network_name = self.network.name
+
+        # NOTE: Fantom's mainnet is named "opera", but the Alchemy URI expects "mainnet".
         if self.network.ecosystem.name == "fantom" and self.network.name == "opera":
             network_name = "mainnet"
+
         uri = network_format.format(network_name, key)
         self.network_uris[(ecosystem_name, network_name)] = uri
         return uri

@@ -15,6 +15,10 @@ NETWORKS = {
         "mainnet",
         "sepolia",
     ],
+    "fantom": [
+        "opera",
+        "testnet",
+    ],
     "optimism": [
         "mainnet",
         "sepolia",
@@ -27,11 +31,6 @@ NETWORKS = {
         "mainnet",
         "cardona",
     ],
-    "fantom": [
-        "opera",
-        "testnet",
-    ],
-
 }
 
 
