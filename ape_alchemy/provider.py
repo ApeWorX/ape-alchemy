@@ -147,17 +147,17 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 try:
                     block = self.web3.eth.get_block(option)  # type: ignore[arg-type]
                 except ExtraDataLengthError:
-                    is_likely_poa = True
+                    is_poa = True
                     break
                 else:
-                    is_likely_poa = (
+                    is_poa = (
                         "proofOfAuthorityData" in block
                         or len(block.get("extraData", "")) > MAX_EXTRADATA_LENGTH
                     )
-                    if is_likely_poa:
+                    if is_poa:
                         break
 
-            if is_likely_poa and ExtraDataToPOAMiddleware not in self.web3.middleware_onion:
+            if is_poa and ExtraDataToPOAMiddleware not in self.web3.middleware_onion:
                 self.web3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
 
     def disconnect(self):
