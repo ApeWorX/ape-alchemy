@@ -21,6 +21,7 @@ def test_http(provider):
     assert provider.http_uri.startswith("https")
     assert provider.get_balance(ZERO_ADDRESS) > 0
     assert provider.get_block(0)
+    assert provider.get_block("latest")
 
 
 def test_ws(provider):
