@@ -1,11 +1,13 @@
 import os
+from typing import TYPE_CHECKING
 
 import ape
 import pytest
 from requests import HTTPError, Response
 from web3 import Web3
 
-from ape_alchemy.provider import Alchemy
+if TYPE_CHECKING:
+    from ape_alchemy.provider import Alchemy
 
 FEATURE_NOT_AVAILABLE_BECAUSE_OF_TIER_RESPONSE = (
     "trace_transaction is not available on the Free tier - "
@@ -91,5 +93,5 @@ def feature_not_available_http_error(mocker, request):
 
 
 @pytest.fixture
-def alchemy_provider(networks) -> Alchemy:
+def alchemy_provider(networks) -> "Alchemy":
     return networks.ethereum.sepolia.get_provider("alchemy")

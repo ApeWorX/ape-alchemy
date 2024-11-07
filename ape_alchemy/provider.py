@@ -1,6 +1,6 @@
 import os
 from collections.abc import Iterable
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
 from ape.exceptions import (
@@ -10,9 +10,7 @@ from ape.exceptions import (
     VirtualMachineError,
 )
 from ape.logging import logger
-from ape.types import BlockID
 from ape_ethereum.provider import Web3Provider
-from ape_ethereum.transactions import AccessList
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
 from requests import HTTPError
@@ -27,6 +25,11 @@ from web3.types import RPCEndpoint
 
 from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
 from .trace import AlchemyTransactionTrace
+
+if TYPE_CHECKING:
+    from ape.types import BlockID
+    from ape_ethereum.transactions import AccessList
+
 
 # The user must either set one of these or an ENV VAR of the pattern:
 #  WEB3_<ECOSYSTEM>_<NETWORK>_PROJECT_ID or  WEB3_<ECOSYSTEM>_<NETWORK>_API_KEY
@@ -205,8 +208,8 @@ class Alchemy(Web3Provider, UpstreamProvider):
         return VirtualMachineError(message=message, txn=txn)
 
     def create_access_list(
-        self, transaction: TransactionAPI, block_id: Optional[BlockID] = None
-    ) -> list[AccessList]:
+        self, transaction: TransactionAPI, block_id: Optional["BlockID"] = None
+    ) -> list["AccessList"]:
         if self.network.ecosystem.name == "polygon-zkevm":
             # The error is only 400 with no info otherwise.
             raise APINotImplementedError()
