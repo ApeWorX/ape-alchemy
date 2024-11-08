@@ -4,7 +4,7 @@ from ape import accounts, networks
 from ape.exceptions import APINotImplementedError
 from ape.utils import ZERO_ADDRESS
 
-from ape_alchemy import NETWORKS
+from ape_alchemy._utils import NETWORKS
 from ape_alchemy.provider import NETWORKS_SUPPORTING_WEBSOCKETS, Alchemy
 
 
