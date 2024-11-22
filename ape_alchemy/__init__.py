@@ -23,3 +23,9 @@ def __getattr__(name: str):
         return Alchemy
 
     raise AttributeError(name)
+
+
+__all__ = [
+    "NETWORKS",
+    "Alchemy",
+]
