@@ -80,24 +80,41 @@ class Alchemy(Web3Provider, UpstreamProvider):
         if not key:
             raise MissingProjectKeyError(options)
 
-        network_formats_by_ecosystem = {
-            "ethereum": "https://eth-{0}.g.alchemy.com/v2/{1}",
-            "arbitrum": "https://arb-{0}.g.alchemy.com/v2/{1}",
-            "base": "https://base-{0}.g.alchemy.com/v2/{1}",
-            "optimism": "https://opt-{0}.g.alchemy.com/v2/{1}",
-            "polygon": "https://polygon-{0}.g.alchemy.com/v2/{1}",
-            "polygon-zkevm": "https://polygonzkevm-{0}.g.alchemy.com/v2/{1}",
-            "fantom": "https://fantom-{0}.g.alchemy.com/v2/{1}",
-        }
-
-        network_format = network_formats_by_ecosystem[ecosystem_name]
         network_name = self.network.name
 
         # NOTE: Fantom's mainnet is named "opera", but the Alchemy URI expects "mainnet".
         if self.network.ecosystem.name == "fantom" and self.network.name == "opera":
             network_name = "mainnet"
 
-        uri = network_format.format(network_name, key)
+        default_format = "{0}-{1}.g.alchemy.com/v2/{2}"
+        network_formats_by_ecosystem = {
+            "arbitrum": "arb-{0}.g.alchemy.com/v2/{1}",
+            "avalanche": "avax-{0}.g.alchemy.com/v2/{1}",
+            "bsc": "bnb-{0}.g.alchemy.com/v2/{1}",
+            "ethereum": "eth-{0}.g.alchemy.com/v2/{1}",
+            "flow-evm": "flow-{0}.g.alchemy.com/v2/{1}",
+            "fraxtal": "frax-{0}.g.alchemy.com/v2/{1}",
+            "optimism": "opt-{0}.g.alchemy.com/v2/{1}",
+            "polygon-zkevm": "polygonzkevm-{0}.g.alchemy.com/v2/{1}",
+            "world-chain": "worldchain-{0}.g.alchemy.com/v2/{1}",
+        }
+
+        if ecosystem_name in network_formats_by_ecosystem:
+            # Special cases.
+            if network_name == "nova":
+                uri = "arbnova-mainnet.g.alchemy.com/v2/{}".format(key)
+            elif network_name.startswith("opbnb"):
+                sub_network = "mainnet" if network_name == "opbnb" else "testnet"
+                uri = "opbnb-{0}.g.alchemy.com/v2/{1}".format(sub_network, key)
+            else:
+                network_format = network_formats_by_ecosystem[ecosystem_name]
+                uri = network_format.format(network_name, key)
+        elif ecosystem_name == "xmtp" and network_name == "sepolia":
+            uri = "xmtp-testnet.g.alchemy.com/v2/{0}".format(key)
+        else:
+            uri = default_format.format(ecosystem_name, network_name, key)
+
+        uri = f"https://{uri}"
         self.network_uris[(ecosystem_name, network_name)] = uri
         return uri
 
@@ -138,8 +155,8 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 is_poa = True
 
             self._web3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
-        except Exception as err:
-            raise ProviderError(f"Failed to connect to Alchemy.\n{repr(err)}") from err
+        except Exception:
+            is_poa = None
 
         if is_poa is None:
             # Check if is PoA but just wasn't as such yet.

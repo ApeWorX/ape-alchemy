@@ -19,7 +19,9 @@ def provider(request):
 def test_http(provider):
     assert isinstance(provider, Alchemy)
     assert provider.http_uri.startswith("https")
-    assert provider.get_balance(ZERO_ADDRESS) > 0
+
+    # NOTE: Sometimes the balance is 0, for some chains.
+    assert provider.get_balance(ZERO_ADDRESS) is not None
     assert provider.get_block(0)
     assert provider.get_block("latest")
 
