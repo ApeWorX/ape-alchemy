@@ -35,7 +35,6 @@ PRIVATE_TX_BLOCK_WAIT = 25
 
 # NOTE: "*" means "all networks".
 NETWORKS_SUPPORTING_WEBSOCKETS = {
-    "abstract": "*",
     "arbitrum": "*",
     "avalanche": "*",
     "base": "*",
