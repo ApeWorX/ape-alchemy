@@ -74,10 +74,11 @@ setup(
     url="https://github.com/ApeWorX/ape-alchemy",
     include_package_data=True,
     install_requires=[
-        "eth-ape>=0.8.1,<0.9",
+        "eth-ape>=0.8.21,<0.9",
         "eth-pydantic-types",  # Use same version as eth-ape
         "ethpm-types",  # Use same version as eth-ape
         "evm-trace",  # Use same version as eth-ape
+        "evmchains>=0.1.3,<0.2",  # Dependent on networks (not imports)
         "web3",  # Use same version as eth-ape
         "requests",
     ],

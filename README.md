@@ -3,13 +3,39 @@
 Use the [Alchemy](https://alchemy.com/?r=jk3NDM0MTIwODIzM) provider plugin to interact with blockchains via APIs.
 The `ape-alchemy` plugin supports the following ecosystems:
 
-- Ethereum
+- Abstract
+- ApeChain
 - Arbitrum
+- Astar
+- Avalanche
 - Base
+- Berachain
+- Blast
+- BSC (including opBNB)
+- CrossFi
+- Ethereum
 - Fantom
+- Flow EVM
+- Geist
+- Gnosis
+- Lens
+- Linea
+- Lumia
+- Mantle
+- Metis
 - Optimism
 - Polygon
 - Polygon-ZkEVM
+- Rootstock
+- Scroll
+- Shape
+- Soneium
+- Unichain
+- XMTP
+- World-Chain
+- zetachain
+- ZkSync
+- Zora
 
 ## Dependencies
 
