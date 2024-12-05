@@ -13,8 +13,12 @@ from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.exceptions import ExtraDataLengthError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
-from web3.middleware import geth_poa_middleware
-from web3.middleware import geth_poa_middleware as ExtraDataToPOAMiddleware
+
+try:
+    from web3.middleware import ExtraDataToPOAMiddleware  # type: ignore
+except ImportError:
+    from web3.middleware import geth_poa_middleware as ExtraDataToPOAMiddleware  # type: ignore
+
 from web3.middleware.validation import MAX_EXTRADATA_LENGTH
 from web3.types import RPCEndpoint
 
@@ -174,7 +178,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
             polygon_amoy = 80002
 
             if self._web3.eth.chain_id in (base, optimism, polygon, polygon_amoy):
-                self._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
+                self._web3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
                 is_poa = True
 
             self._web3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
