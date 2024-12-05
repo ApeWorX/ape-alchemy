@@ -3,12 +3,7 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, Optional
 
 from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
-from ape.exceptions import (
-    APINotImplementedError,
-    ContractLogicError,
-    ProviderError,
-    VirtualMachineError,
-)
+from ape.exceptions import APINotImplementedError, ContractLogicError, VirtualMachineError
 from ape.logging import logger
 from ape_ethereum.provider import Web3Provider
 from eth_pydantic_types import HexBytes
