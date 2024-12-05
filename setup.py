@@ -80,6 +80,7 @@ setup(
         "evm-trace>=0.2.3,<0.3",
         "web3>=7.6.0,<8",
         "requests>=2.32.3,<3",
+        "evmchains>=0.1.3,<0.2",  # Dependent on networks (not imports)
     ],
     python_requires=">=3.9,<4",
     extras_require=extras_require,

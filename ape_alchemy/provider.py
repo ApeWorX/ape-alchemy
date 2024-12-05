@@ -18,6 +18,7 @@ from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.exceptions import ExtraDataLengthError
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
+
 try:
     from web3.middleware import ExtraDataToPOAMiddleware  # type: ignore
 except ImportError:
