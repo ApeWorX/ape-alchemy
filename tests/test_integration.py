@@ -5,7 +5,7 @@ from ape.exceptions import APINotImplementedError
 from ape.utils import ZERO_ADDRESS
 
 from ape_alchemy._utils import NETWORKS
-from ape_alchemy.provider import NETWORKS_SUPPORTING_WEBSOCKETS, Alchemy
+from ape_alchemy.provider import Alchemy
 
 
 @pytest.fixture(params=[(name, net) for name, values in NETWORKS.items() for net in values])
@@ -27,7 +27,8 @@ def test_http(provider):
 
 
 def test_ws(provider):
-    if provider.network.ecosystem.name not in NETWORKS_SUPPORTING_WEBSOCKETS:
+    ws_uri = provider.ws_uri
+    if ws_uri is None:
         # Test will fail. Network does not support ws clients.
         return
 
