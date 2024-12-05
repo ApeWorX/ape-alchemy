@@ -33,7 +33,30 @@ DEFAULT_ENVIRONMENT_VARIABLE_NAMES = ("WEB3_ALCHEMY_PROJECT_ID", "WEB3_ALCHEMY_A
 # Alchemy will try to publish private transactions for 25 blocks.
 PRIVATE_TX_BLOCK_WAIT = 25
 
-NETWORKS_SUPPORTING_WEBSOCKETS = ("ethereum", "arbitrum", "base", "optimism", "polygon", "fantom")
+# NOTE: "*" means "all networks".
+NETWORKS_SUPPORTING_WEBSOCKETS = {
+    "abstract": "*",
+    "arbitrum": "*",
+    "avalanche": "*",
+    "base": "*",
+    "bsc": ("mainnet", "testnet"),
+    "berachain": "*",
+    "blast": "*",
+    "ethereum": "*",
+    "fantom": "*",
+    "geist": ("polter",),
+    "gnosis": "*",
+    "lens": "*",
+    "linea": "*",
+    "optimism": "*",
+    "polygon": "*",
+    "scroll": "*",
+    "shape": "*",
+    "soneium": "*",
+    "unichain": "*",
+    "world-chain": "*",
+    "zksync": "*",
+}
 
 
 class Alchemy(Web3Provider, UpstreamProvider):
@@ -119,7 +142,13 @@ class Alchemy(Web3Provider, UpstreamProvider):
         return self.uri
 
     @property
-    def ws_uri(self) -> str:
+    def ws_uri(self) -> Optional[str]:
+        ecosystem_name = self.network.ecosystem.name
+        network_name = self.network.name
+        supported_networks = NETWORKS_SUPPORTING_WEBSOCKETS.get(ecosystem_name, [])
+        if supported_networks != "*" and network_name not in supported_networks:
+            return None
+
         # NOTE: Overriding `Web3Provider.ws_uri` implementation
         return "ws" + self.uri[4:]  # Remove `http` in default URI w/ `ws`
 
