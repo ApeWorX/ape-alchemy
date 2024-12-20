@@ -1,6 +1,5 @@
 import os
-from collections.abc import Iterable
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Optional
 
 from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
 from ape.exceptions import APINotImplementedError, ContractLogicError, VirtualMachineError
@@ -8,7 +7,6 @@ from ape.logging import logger
 from ape_ethereum.provider import Web3Provider
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
-from requests import HTTPError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.exceptions import ExtraDataLengthError
@@ -20,9 +18,8 @@ except ImportError:
     from web3.middleware import geth_poa_middleware as ExtraDataToPOAMiddleware  # type: ignore
 
 from web3.middleware.validation import MAX_EXTRADATA_LENGTH
-from web3.types import RPCEndpoint
 
-from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
+from .exceptions import MissingProjectKeyError
 from .trace import AlchemyTransactionTrace
 
 if TYPE_CHECKING:
