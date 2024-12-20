@@ -212,7 +212,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
     def _get_prestate_trace(self, transaction_hash: str) -> dict:
         return self.make_request(
-            "debug_traceTransaction", [transaction_hash, {"tracer": "prestateTracer"}]
+            "debug_traceTransaction",
+            [
+                transaction_hash,
+                {"tracer": "prestateTracer", "timeout": "10s"},
+            ],  # TODO: update timeout from config
         )
 
     def get_transaction_trace(self, transaction_hash: str, **kwargs) -> TraceAPI:
@@ -260,32 +264,32 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return super().create_access_list(transaction, block_id=block_id)
 
-    # def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
-    #     parameters = parameters or []
-    #     try:
-    #         result = self.web3.provider.make_request(RPCEndpoint(rpc), parameters)
-    #     except HTTPError as err:
-    #         response_data = err.response.json() if err.response else {}
-    #         if "error" not in response_data:
-    #             raise AlchemyProviderError(str(err)) from err
+    def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
+        parameters = parameters or []
+        try:
+            result = self.web3.provider.make_request(RPCEndpoint(rpc), parameters)
+        except HTTPError as err:
+            response_data = err.response.json() if err.response else {}
+            if "error" not in response_data:
+                raise AlchemyProviderError(str(err)) from err
 
-    #         error_data = response_data["error"]
-    #         message = (
-    #             error_data.get("message", str(error_data))
-    #             if isinstance(error_data, dict)
-    #             else error_data
-    #         )
-    #         cls = (
-    #             AlchemyFeatureNotAvailable
-    #             if "is not available" in message
-    #             else AlchemyProviderError
-    #         )
-    #         raise cls(message) from err
+            error_data = response_data["error"]
+            message = (
+                error_data.get("message", str(error_data))
+                if isinstance(error_data, dict)
+                else error_data
+            )
+            cls = (
+                AlchemyFeatureNotAvailable
+                if "is not available" in message
+                else AlchemyProviderError
+            )
+            raise cls(message) from err
 
-    #     if isinstance(result, dict) and (res := result.get("result")):
-    #         return res
+        if isinstance(result, dict) and (res := result.get("result")):
+            return res
 
-    #     return result
+        return result
 
     def send_private_transaction(self, txn: TransactionAPI, **kwargs) -> ReceiptAPI:
         """

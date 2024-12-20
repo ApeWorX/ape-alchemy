@@ -32,6 +32,12 @@ class AlchemyTransactionTrace(TransactionTrace):
             "debug_traceTransaction",
             [
                 self.transaction_hash,
-                {"tracer": "callTracer", "tracerConfig": {"onlyTopLevelCall": True}},
+                {
+                    "tracer": "callTracer",
+                    "timeout": "10s",
+                    "tracerConfig": {
+                        "onlyTopLevelCall": True,
+                    },
+                },  # TODO: Update timeout from config
             ],
         )
