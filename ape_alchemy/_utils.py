@@ -15,19 +15,26 @@ NETWORKS = {
         "mainnet",
     ],
     "avalanche": [
-        "fuji",
         "mainnet",
+        "fuji",
     ],
     "base": [
         "mainnet",
         "sepolia",
     ],
-    "berachain": ["bartio"],
+    "berachain": [
+        "bartio",
+    ],
     "blast": [
         "mainnet",
         "sepolia",
     ],
-    "bsc": ["mainnet", "testnet", "opbnb", "opbnb-testnet"],
+    "bsc": [
+        "mainnet",
+        "testnet",
+        "opbnb",
+        "opbnb-testnet",
+    ],
     "crossfi": [
         "mainnet",
         "testnet",
