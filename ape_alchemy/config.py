@@ -2,7 +2,8 @@ from ape.api import PluginConfig
 
 
 class AlchemyConfig(PluginConfig):
-    """Configuration for Alchemy.
+    """
+    Configuration for Alchemy.
 
     Args:
         min_retry_delay (int): The amount of milliseconds to wait before
@@ -24,4 +25,4 @@ class AlchemyConfig(PluginConfig):
     max_retry_delay: int = 30_000
     max_retries: int = 3
     retry_jitter: int = 250
-    trace_timeout: int = 10_000
+    trace_timeout: str = "10s"

@@ -216,7 +216,10 @@ class Alchemy(Web3Provider, UpstreamProvider):
             "debug_traceTransaction",
             [
                 transaction_hash,
-                {"tracer": "prestateTracer", "timeout": self.config.trace_timeout},
+                {
+                    "tracer": "prestateTracer",
+                    "timeout": self.config.trace_timeout,
+                },
             ],
         )
 
