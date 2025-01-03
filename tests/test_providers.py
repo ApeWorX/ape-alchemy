@@ -4,6 +4,7 @@ import pytest
 from ape.exceptions import ContractLogicError
 from ape.types import LogFilter
 from hexbytes import HexBytes
+from requests import HTTPError
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 
 from ape_alchemy.provider import MissingProjectKeyError
@@ -179,3 +180,29 @@ def test_get_transaction_trace(networks, alchemy_provider, mock_web3, parity_tra
     actual = repr(trace.get_calltree())
     expected = r"CALL: 0xC17f2C69aE2E66FD87367E3260412EEfF637F70E\.<0x96d373e5\> \[1401584 gas\]"
     assert re.match(expected, actual)
+
+
+def test_make_request_rate_limiting(mocker, alchemy_provider, mock_web3):
+    alchemy_provider._web3 = mock_web3
+
+    class RateLimitTester:
+        tries = 2
+        _try = 0
+        tries_made = 0
+
+        def rate_limit_hook(self, rpc, params):
+            self.tries_made += 1
+            if self._try == self.tries:
+                self._try = 0
+                return {"success": True}
+            else:
+                self._try += 1
+                response = mocker.MagicMock()
+                response.status_code = 429
+                raise HTTPError(response=response)
+
+    rate_limit_tester = RateLimitTester()
+    mock_web3.provider.make_request.side_effect = rate_limit_tester.rate_limit_hook
+    result = alchemy_provider.make_request("ape_testRateLimiting", parameters=[])
+    assert rate_limit_tester.tries_made == rate_limit_tester.tries + 1
+    assert result == {"success": True}
