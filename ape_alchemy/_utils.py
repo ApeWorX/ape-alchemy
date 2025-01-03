@@ -40,6 +40,7 @@ NETWORKS = {
         "testnet",
     ],
     "ethereum": [
+        "holesky",
         "mainnet",
         "sepolia",
     ],
