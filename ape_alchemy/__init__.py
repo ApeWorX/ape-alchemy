@@ -1,6 +1,13 @@
 from ape import plugins
 
 
+@plugins.register(plugins.Config)
+def config_class():
+    from .config import AlchemyConfig
+
+    return AlchemyConfig
+
+
 @plugins.register(plugins.ProviderPlugin)
 def providers():
     from ._utils import NETWORKS
@@ -22,10 +29,16 @@ def __getattr__(name: str):
 
         return Alchemy
 
+    elif name == "AlcheymyConfig":
+        from .config import AlchemyConfig
+
+        return AlchemyConfig
+
     raise AttributeError(name)
 
 
 __all__ = [
     "NETWORKS",
     "Alchemy",
+    "AlchemyConfig",
 ]

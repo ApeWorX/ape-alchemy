@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional
 from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
 from ape.exceptions import APINotImplementedError, ContractLogicError, VirtualMachineError
 from ape.logging import logger
+from ape.utils import request_with_retry
 from ape_ethereum.provider import Web3Provider
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
@@ -215,8 +216,8 @@ class Alchemy(Web3Provider, UpstreamProvider):
             "debug_traceTransaction",
             [
                 transaction_hash,
-                {"tracer": "prestateTracer", "timeout": "10s"},
-            ],  # TODO: update timeout from config
+                {"tracer": "prestateTracer", "timeout": self.config.trace_timeout},
+            ],
         )
 
     def get_transaction_trace(self, transaction_hash: str, **kwargs) -> TraceAPI:
@@ -265,9 +266,17 @@ class Alchemy(Web3Provider, UpstreamProvider):
         return super().create_access_list(transaction, block_id=block_id)
 
     def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
+        config = self.config
         parameters = parameters or []
         try:
-            result = self.web3.provider.make_request(RPCEndpoint(rpc), parameters)
+            result = request_with_retry(
+                lambda: self.web3.provider.make_request(RPCEndpoint(rpc), parameters),
+                min_retry_delay=config.min_retry_delay,
+                retry_backoff_factor=config.retry_backoff_factor,
+                max_retry_delay=config.max_retry_delay,
+                max_retries=config.max_retries,
+                retry_jitter=config.retry_jitter,
+            )
         except HTTPError as err:
             response_data = err.response.json() if err.response else {}
             if "error" not in response_data:

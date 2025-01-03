@@ -34,10 +34,10 @@ class AlchemyTransactionTrace(TransactionTrace):
                 self.transaction_hash,
                 {
                     "tracer": "callTracer",
-                    "timeout": "10s",
+                    "timeout": self.provider.config.trace_timeout,
                     "tracerConfig": {
                         "onlyTopLevelCall": True,
                     },
-                },  # TODO: Update timeout from config
+                },
             ],
         )
