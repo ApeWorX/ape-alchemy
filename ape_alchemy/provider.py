@@ -269,16 +269,16 @@ class Alchemy(Web3Provider, UpstreamProvider):
         return super().create_access_list(transaction, block_id=block_id)
 
     def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
-        config = self.config
+        rate_limit = self.config.rate_limit
         parameters = parameters or []
         try:
             result = request_with_retry(
                 lambda: self.web3.provider.make_request(RPCEndpoint(rpc), parameters),
-                min_retry_delay=config.min_retry_delay,
-                retry_backoff_factor=config.retry_backoff_factor,
-                max_retry_delay=config.max_retry_delay,
-                max_retries=config.max_retries,
-                retry_jitter=config.retry_jitter,
+                min_retry_delay=rate_limit.min_retry_delay,
+                retry_backoff_factor=rate_limit.retry_backoff_factor,
+                max_retry_delay=rate_limit.max_retry_delay,
+                max_retries=rate_limit.max_retries,
+                retry_jitter=rate_limit.retry_jitter,
             )
         except HTTPError as err:
             response_data = err.response.json() if err.response else {}
