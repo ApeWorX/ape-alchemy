@@ -3,7 +3,12 @@ from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any, Optional
 
 from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
-from ape.exceptions import APINotImplementedError, ContractLogicError, VirtualMachineError
+from ape.exceptions import (
+    APINotImplementedError,
+    ContractLogicError,
+    TransactionNotFoundError,
+    VirtualMachineError,
+)
 from ape.logging import logger
 from ape.utils import request_with_retry
 from ape_ethereum.provider import Web3Provider
@@ -12,7 +17,7 @@ from eth_typing import HexStr
 from requests import HTTPError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
-from web3.exceptions import ExtraDataLengthError
+from web3.exceptions import ExtraDataLengthError, TransactionNotFound
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 
 try:
@@ -365,7 +370,11 @@ class Alchemy(Web3Provider, UpstreamProvider):
     ) -> ReceiptAPI:
         if not required_confirmations and not timeout:
             # Allows `get_receipt` to work better when not sending.
-            data = self.web3.eth.get_transaction_receipt(HexStr(txn_hash))
+            try:
+                data = self.web3.eth.get_transaction_receipt(HexStr(txn_hash))
+            except TransactionNotFound as err:
+                raise TransactionNotFoundError(txn_hash) from err
+
             txn = dict(self.web3.eth.get_transaction(HexStr(txn_hash)))
             return self.network.ecosystem.decode_receipt(
                 {

@@ -1,7 +1,7 @@
 import pytest
 import websocket  # type: ignore
 from ape import accounts, networks
-from ape.exceptions import APINotImplementedError
+from ape.exceptions import APINotImplementedError, TransactionNotFoundError
 from ape.utils import ZERO_ADDRESS
 
 from ape_alchemy._utils import NETWORKS
@@ -68,3 +68,14 @@ def test_make_request_handles_result():
     with networks.polygon_zkevm.cardona.use_provider("alchemy") as provider:
         result = provider.make_request("eth_call", [tx, "latest"])
         assert not isinstance(result, dict)
+
+
+def test_get_receipt():
+    with networks.ethereum.sepolia.use_provider("alchemy") as alchemy:
+        txn_hash = "0x68605140856c13038d325048c411aed98cc1eecc189f628a38edb597f6b9679e"
+        existing_tx = alchemy.get_receipt(txn_hash)
+        assert existing_tx.txn_hash == txn_hash
+
+        txn_hash = "0x66600044856c13038d325048c411aed98cc1eecc189f628a38eeeeeeeeeeeeee"
+        with pytest.raises(TransactionNotFoundError):
+            _ = alchemy.get_receipt(txn_hash)
