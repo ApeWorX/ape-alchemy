@@ -55,7 +55,7 @@ def test_polygon_zkevm():
             _ = provider.create_access_list(tx)
 
 
-def test_make_requeset_handles_result():
+def test_make_request_handles_result():
     """
     There was a bug where eth_call because ape-alchemy wasn't
     handling the result from make_request properly.
