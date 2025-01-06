@@ -203,7 +203,7 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 </span></pre></div>
 </div>
 <p>To connect to Alchemy from a Python script, use the <code class="docutils literal notranslate"><span class="pre">networks</span></code> top-level manager:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">ape</span><span class="w"> </span><span class="kn">import</span> <span class="n">networks</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="k">with</span> <span class="n">networks</span><span class="o">.</span><span class="n">parse_network_choice</span><span class="p">(</span><span class="s2">&quot;ethereum:mainnet:alchemy&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">provider</span><span class="p">:</span>
 </span><span data-line="4">    <span class="o">...</span>
@@ -213,7 +213,7 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 <h3>Transaction Traces<a class="headerlink" href="#transaction-traces" title="Link to this heading"></a></h3>
 <p>If you are using a paid tier of Alchemy, you have access to both Geth and Parity style traces.
 Parity traces are faster and thus are the ones uses in Ethereum receipts’ <code class="docutils literal notranslate"><span class="pre">show_trace()</span></code> method:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">ape</span><span class="w"> </span><span class="kn">import</span> <span class="n">networks</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">networks</span><span class="o">.</span><span class="n">provider</span>  <span class="c1"># Assuming connected to Alchemy</span>
 </span><span data-line="4"><span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">&quot;0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d&quot;</span>
@@ -222,7 +222,7 @@ Parity traces are faster and thus are the ones uses in Ethereum receipts’ <cod
 </span></pre></div>
 </div>
 <p>To access the raw <code class="docutils literal notranslate"><span class="pre">CallTree</span></code>, do:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span> <span class="nn">ape</span> <span class="kn">import</span> <span class="n">networks</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">ape</span><span class="w"> </span><span class="kn">import</span> <span class="n">networks</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">networks</span><span class="o">.</span><span class="n">provider</span>  <span class="c1"># Assuming connected to Alchemy</span>
 </span><span data-line="4"><span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">&quot;0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d&quot;</span>
