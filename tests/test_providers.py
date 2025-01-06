@@ -206,3 +206,14 @@ def test_make_request_rate_limiting(mocker, alchemy_provider, mock_web3):
     result = alchemy_provider.make_request("ape_testRateLimiting", parameters=[])
     assert rate_limit_tester.tries_made == rate_limit_tester.tries + 1
     assert result == {"success": True}
+
+
+def test_make_request_empty_result(alchemy_provider, mock_web3):
+    """
+    Testing the case when the result is empty that it still returns it
+    (and not the raw JSON response).
+    """
+    alchemy_provider._web3 = mock_web3
+    mock_web3.provider.make_request.return_value = {"jsonrpc": "2.0", "id": 8, "result": []}
+    result = alchemy_provider.make_request("ape_madeUpRPC", [])
+    assert result == []
