@@ -372,7 +372,8 @@ class Alchemy(Web3Provider, UpstreamProvider):
             except TransactionNotFound as err:
                 raise TransactionNotFoundError(txn_hash) from err
 
-            txn = dict(self.web3.eth.get_transaction(HexStr(txn_hash)))
+            txn = dict(self.make_request("eth_getTransactionByHash", [HexStr(txn_hash)]))
+
             return self.network.ecosystem.decode_receipt(
                 {
                     "provider": self,
