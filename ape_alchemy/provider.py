@@ -283,7 +283,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 # NOTE: This is copied from `ape.utils.request_with_retry(..., is_rate_limit=None)`
                 (isinstance(err, HTTPError) and err.response.status_code == 429)
                 # NOTE: Sometimes Alchemy justs... stops responding in the middle of a response,
-                #       so treat it like a rate limit error since it usually works 2nd/3rd time around
+                #       so treat it like a rate limit error since it usually works 2nd/3rd time
                 or isinstance(err, (ConnectionError, ProtocolError))
             )
 
