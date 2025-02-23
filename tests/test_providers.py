@@ -162,6 +162,7 @@ def test_estimate_gas_would_revert_no_message(token, alchemy_provider, mock_web3
 
 
 def test_get_contract_logs(networks, alchemy_provider, mock_web3, block, log_filter):
+    _ = alchemy_provider.chain_id  # Make sure this has been called _before_ setting mock.
     mock_web3.eth.get_block.return_value = block
     alchemy_provider._web3 = mock_web3
     networks.active_provider = alchemy_provider
