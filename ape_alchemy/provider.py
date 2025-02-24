@@ -14,7 +14,8 @@ from ape.utils import request_with_retry
 from ape_ethereum.provider import Web3Provider
 from eth_pydantic_types import HexBytes
 from eth_typing import HexStr
-from requests import HTTPError
+from requests.exceptions import ConnectionError, HTTPError
+from urllib3.exceptions import ProtocolError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 from web3.exceptions import ExtraDataLengthError, TransactionNotFound
@@ -273,9 +274,20 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         return super().create_access_list(transaction, block_id=block_id)
 
+    @staticmethod
+    def _response_checker(err: Exception) -> bool:
+        return (
+            # NOTE: This is copied from `ape.utils.request_with_retry(..., is_rate_limit=None)`
+            (isinstance(err, HTTPError) and err.response.status_code == 429)
+            # NOTE: Sometimes Alchemy justs... stops responding in the middle of a response,
+            #       so treat it like a rate limit error since it usually works 2nd/3rd time
+            or isinstance(err, (ConnectionError, ProtocolError))
+        )
+
     def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
         rate_limit = self.config.rate_limit
         parameters = parameters or []
+
         try:
             result = request_with_retry(
                 lambda: self.web3.provider.make_request(RPCEndpoint(rpc), parameters),
@@ -284,6 +296,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 max_retry_delay=rate_limit.max_retry_delay,
                 max_retries=rate_limit.max_retries,
                 retry_jitter=rate_limit.retry_jitter,
+                is_rate_limit=self._response_checker,
             )
         except HTTPError as err:
             response_data = err.response.json() if err.response else {}
