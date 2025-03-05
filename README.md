@@ -30,6 +30,7 @@ The `ape-alchemy` plugin supports the following ecosystems:
 - Scroll
 - Shape
 - Soneium
+- Sonic
 - Unichain
 - XMTP
 - World-Chain

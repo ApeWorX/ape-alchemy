@@ -63,6 +63,7 @@ NETWORKS_SUPPORTING_WEBSOCKETS = {
     "scroll": "*",
     "shape": "*",
     "soneium": "*",
+    "sonic": "*",
     "unichain": "*",
     "world-chain": "*",
     "zksync": "*",
