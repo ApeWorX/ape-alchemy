@@ -7,8 +7,6 @@ from hexbytes import HexBytes
 from requests import HTTPError
 from web3.exceptions import ContractLogicError as Web3ContractLogicError
 
-from ape_alchemy.provider import MissingProjectKeyError
-
 TXN_HASH = "0x3cef4aaa52b97b6b61aa32b3afcecb0d14f7862ca80fdc76504c37a9374645c4"
 
 
@@ -109,18 +107,8 @@ def receipt():
     }
 
 
-def test_when_no_api_key_raises_error(missing_token, alchemy_provider):
-    with pytest.raises(
-        MissingProjectKeyError,
-        match=re.escape(
-            "Must set one of "
-            "$WEB3_ALCHEMY_PROJECT_ID, "
-            "$WEB3_ALCHEMY_API_KEY, "
-            "$WEB3_ETHEREUM_SEPOLIA_ALCHEMY_PROJECT_ID, "
-            "$WEB3_ETHEREUM_SEPOLIA_ALCHEMY_API_KEY."
-        ),
-    ):
-        alchemy_provider.connect()
+def test_uri_no_api_key(missing_token, alchemy_provider):
+    assert alchemy_provider.uri.endswith("/demo")
 
 
 def test_send_transaction_reverts(token, alchemy_provider, mock_web3, transaction):

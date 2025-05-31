@@ -16,7 +16,6 @@ The `ape-alchemy` plugin supports the following ecosystems:
 - Ethereum
 - Fantom
 - Flow EVM
-- Geist
 - Gnosis
 - Lens
 - Linea
