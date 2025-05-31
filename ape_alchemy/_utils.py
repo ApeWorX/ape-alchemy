@@ -46,15 +46,10 @@ NETWORKS = {
     ],
     "fantom": [
         "opera",
-        "testnet",
     ],
     "flow-evm": [
         "mainnet",
         "testnet",
-    ],
-    "geist": [
-        "mainnet",
-        "polter",
     ],
     "gnosis": [
         "mainnet",
