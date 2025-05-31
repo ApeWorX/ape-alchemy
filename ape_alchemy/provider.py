@@ -29,7 +29,7 @@ except ImportError:
 from web3.middleware.validation import MAX_EXTRADATA_LENGTH
 from web3.types import RPCEndpoint
 
-from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError, MissingProjectKeyError
+from .exceptions import AlchemyFeatureNotAvailable, AlchemyProviderError
 from .trace import AlchemyTransactionTrace
 
 if TYPE_CHECKING:
@@ -53,8 +53,6 @@ NETWORKS_SUPPORTING_WEBSOCKETS = {
     "berachain": "*",
     "blast": "*",
     "ethereum": "*",
-    "fantom": "*",
-    "geist": ("polter",),
     "gnosis": "*",
     "lens": "*",
     "linea": "*",
@@ -106,7 +104,12 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 break
 
         if not key:
-            raise MissingProjectKeyError(options)
+            env_var_str = ", ".join([f"${n}" for n in options])
+            error_message = f"Using demo key. Set one of {env_var_str}."
+            logger.warning(error_message)
+
+            # Alchemy allows you to use the "demo" key for simple, demo purposes.
+            key = "demo"
 
         network_name = self.network.name
 

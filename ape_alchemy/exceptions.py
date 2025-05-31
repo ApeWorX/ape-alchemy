@@ -14,6 +14,7 @@ class AlchemyFeatureNotAvailable(AlchemyProviderError):
     """
 
 
+# TODO: Delete this error in 0.9
 class MissingProjectKeyError(AlchemyProviderError):
     """
     An error raised when there is no API key set.
