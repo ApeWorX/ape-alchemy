@@ -154,7 +154,7 @@ def test_get_contract_logs(networks, alchemy_provider, mock_web3, block, log_fil
     mock_web3.eth.get_block.return_value = block
     alchemy_provider._web3 = mock_web3
     networks.active_provider = alchemy_provider
-    actual = [x for x in alchemy_provider.get_contract_logs(log_filter)]
+    actual = list(alchemy_provider.get_contract_logs(log_filter))
 
     # Fails when improper response handling of logs (is part of bug fix)
     assert actual == []
@@ -184,11 +184,10 @@ def test_make_request_rate_limiting(mocker, alchemy_provider, mock_web3):
             if self._try == self.tries:
                 self._try = 0
                 return {"success": True}
-            else:
-                self._try += 1
-                response = mocker.MagicMock()
-                response.status_code = 429
-                raise HTTPError(response=response)
+            self._try += 1
+            response = mocker.MagicMock()
+            response.status_code = 429
+            raise HTTPError(response=response)
 
     rate_limit_tester = RateLimitTester()
     mock_web3.provider.make_request.side_effect = rate_limit_tester.rate_limit_hook

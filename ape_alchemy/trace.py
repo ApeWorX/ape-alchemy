@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import Any, Optional
+from typing import Any
 
 from ape_ethereum.trace import TraceApproach, TransactionTrace
 from hexbytes import HexBytes
@@ -22,7 +22,7 @@ class AlchemyTransactionTrace(TransactionTrace):
         return None
 
     @cached_property
-    def revert_message(self) -> Optional[str]:
+    def revert_message(self) -> str | None:
         node = self._top_level_call
         return node.get("revertReason")
 

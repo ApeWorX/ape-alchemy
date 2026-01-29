@@ -24,12 +24,12 @@ def __getattr__(name: str):
 
         return NETWORKS
 
-    elif name == "Alchemy":
+    if name == "Alchemy":
         from .provider import Alchemy
 
         return Alchemy
 
-    elif name == "AlcheymyConfig":
+    if name == "AlcheymyConfig":
         from .config import AlchemyConfig
 
         return AlchemyConfig

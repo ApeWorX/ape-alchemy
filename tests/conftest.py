@@ -88,8 +88,7 @@ def feature_not_available_http_error(mocker, request):
     response = mocker.MagicMock(spec=Response)
     response.fixture_param = request.param  # For assertions
     response.json.return_value = {"error": {"message": request.param}}
-    error = HTTPError(response=response)
-    return error
+    return HTTPError(response=response)
 
 
 @pytest.fixture

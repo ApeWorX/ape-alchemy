@@ -17,8 +17,11 @@ from eth_typing import HexStr
 from requests.exceptions import ConnectionError, HTTPError
 from urllib3.exceptions import ProtocolError
 from web3 import HTTPProvider, Web3
-from web3.exceptions import ContractLogicError as Web3ContractLogicError
-from web3.exceptions import ExtraDataLengthError, TransactionNotFound
+from web3.exceptions import (
+    ContractLogicError as Web3ContractLogicError,
+    ExtraDataLengthError,
+    TransactionNotFound,
+)
 from web3.gas_strategies.rpc import rpc_gas_price_strategy
 
 try:
@@ -134,15 +137,15 @@ class Alchemy(Web3Provider, UpstreamProvider):
         if ecosystem_name in network_formats_by_ecosystem:
             # Special cases.
             if network_name == "nova":
-                uri = "arbnova-mainnet.g.alchemy.com/v2/{}".format(key)
+                uri = f"arbnova-mainnet.g.alchemy.com/v2/{key}"
             elif network_name.startswith("opbnb"):
                 sub_network = "mainnet" if network_name == "opbnb" else "testnet"
-                uri = "opbnb-{0}.g.alchemy.com/v2/{1}".format(sub_network, key)
+                uri = f"opbnb-{sub_network}.g.alchemy.com/v2/{key}"
             else:
                 network_format = network_formats_by_ecosystem[ecosystem_name]
                 uri = network_format.format(network_name, key)
         elif ecosystem_name == "xmtp" and network_name == "sepolia":
-            uri = "xmtp-testnet.g.alchemy.com/v2/{0}".format(key)
+            uri = f"xmtp-testnet.g.alchemy.com/v2/{key}"
         else:
             uri = default_format.format(ecosystem_name, network_name, key)
 
@@ -156,7 +159,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
         return self.uri
 
     @property
-    def ws_uri(self) -> Optional[str]:
+    def ws_uri(self) -> str | None:
         ecosystem_name = self.network.ecosystem.name
         network_name = self.network.name
         supported_networks = NETWORKS_SUPPORTING_WEBSOCKETS.get(ecosystem_name, [])
@@ -251,7 +254,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
             # Is some other VM error, like gas related
             return VirtualMachineError(message["message"], txn=txn)
 
-        elif not isinstance(message, str):
+        if not isinstance(message, str):
             return VirtualMachineError(base_err=exception, txn=txn)
 
         # If get here, we have detected a contract logic related revert.
@@ -263,9 +266,8 @@ class Alchemy(Web3Provider, UpstreamProvider):
                 # Was given a revert message
                 message = message.split(":")[-1].strip()
                 return ContractLogicError(revert_message=message, txn=txn)
-            else:
-                # No revert message
-                return ContractLogicError(txn=txn)
+            # No revert message
+            return ContractLogicError(txn=txn)
 
         return VirtualMachineError(message=message, txn=txn)
 
@@ -285,10 +287,10 @@ class Alchemy(Web3Provider, UpstreamProvider):
             (isinstance(err, HTTPError) and err.response.status_code == 429)
             # NOTE: Sometimes Alchemy justs... stops responding in the middle of a response,
             #       so treat it like a rate limit error since it usually works 2nd/3rd time
-            or isinstance(err, (ConnectionError, ProtocolError))
+            or isinstance(err, ConnectionError | ProtocolError)
         )
 
-    def make_request(self, rpc: str, parameters: Optional[Iterable] = None) -> Any:
+    def make_request(self, rpc: str, parameters: Iterable | None = None) -> Any:
         rate_limit = self.config.rate_limit
         parameters = parameters or []
 
@@ -379,7 +381,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
         self,
         txn_hash: str,
         required_confirmations: int = 0,
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
         **kwargs,
     ) -> ReceiptAPI:
         if not required_confirmations and not timeout:
