@@ -78,6 +78,10 @@ jobs:
           run: uv run pytest -m "not fuzzing" -s --cov=ape_alchemy -n auto
           env:
             WEB3_ALCHEMY_PROJECT_ID: ${{ secrets.WEB3_ALCHEMY_PROJECT_ID }}
+            # NOTE: For CI testing w/ Free Tier API, use more forgiving rate limit
+            APE_ALCHEMY_RATE_LIMIT_MIN_RETRY_DELAY: 5000
+            APE_ALCHEMY_RATE_LIMIT_MAX_RETRY_DELAY: 15000
+            APE_ALCHEMY_RATE_LIMIT_MAX_RETRIES: 15
 
 # NOTE: uncomment this block after you've marked tests with @pytest.mark.fuzzing
 #    fuzzing:
