@@ -23,7 +23,8 @@ NETWORKS = {
         "sepolia",
     ],
     "berachain": [
-        "bartio",
+        "mainnet",
+        "bepolia",
     ],
     "blast": [
         "mainnet",
@@ -40,12 +41,9 @@ NETWORKS = {
         "testnet",
     ],
     "ethereum": [
-        "holesky",
         "mainnet",
         "sepolia",
-    ],
-    "fantom": [
-        "opera",
+        "hoodi",
     ],
     "flow-evm": [
         "mainnet",
@@ -64,7 +62,7 @@ NETWORKS = {
     ],
     "lumia": [
         "prism",
-        "testnet",
+        "beam",
     ],
     "mantle": [
         "mainnet",
@@ -105,9 +103,6 @@ NETWORKS = {
         "blaze",
     ],
     "unichain": [
-        "sepolia",
-    ],
-    "xmtp": [
         "sepolia",
     ],
     "world-chain": [
