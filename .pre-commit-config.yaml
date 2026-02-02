@@ -25,5 +25,10 @@ repos:
     -   id: mdformat
         additional_dependencies: [mdformat-gfm, mdformat-frontmatter, mdformat-pyproject]
 
+-   repo: https://github.com/opensource-nepal/commitlint
+    rev: v1.3.0
+    hooks:
+    -   id: commitlint
+
 default_language_version:
     python: python3

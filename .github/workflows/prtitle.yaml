@@ -8,21 +8,11 @@ on:
       - synchronize
 
 jobs:
-    check:
-        runs-on: ubuntu-latest
+  check:
+    runs-on: ubuntu-latest
 
-        steps:
-        - uses: actions/checkout@v6
+    steps:
+    - uses: astral-sh/setup-uv@v7
 
-        - name: Install uv
-          uses: astral-sh/setup-uv@v7
-          with:
-              python-version: "3.10"
-
-        - name: Install Dependencies
-          run: uv sync --group dev
-
-        - name: Check PR Title
-          env:
-              TITLE: ${{ github.event.pull_request.title }}
-          run: cz check --message "$TITLE"
+    - name: Check PR Title
+      run: uvx commitlint "${{ github.event.pull_request.title }}"
