@@ -120,6 +120,12 @@ version.py
 # Ape stuff
 .build/
 
+# uv
+uv.lock
+
 **/.DS_Store
 *.swp
 *.swo
+
+# Claude
+.claude/
