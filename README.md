@@ -39,7 +39,7 @@ The `ape-alchemy` plugin supports the following ecosystems:
 
 ## Dependencies
 
-- [python3](https://www.python.org/downloads) version 3.9 up to 3.12.
+- [Python 3](https://www.python.org/downloads) version 3.10 or greater.
 
 ## Installation
 
@@ -51,14 +51,15 @@ You can install the latest release via [`pip`](https://pypi.org/project/pip/):
 pip install ape-alchemy
 ```
 
-### via `setuptools`
+### via source
 
-You can clone the repository and use [`setuptools`](https://github.com/pypa/setuptools) for the most up-to-date version:
+You can clone the repository and install for development:
 
 ```bash
 git clone https://github.com/ApeWorX/ape-alchemy.git
 cd ape-alchemy
-python3 setup.py install
+uv sync --group dev
+uv run prek install
 ```
 
 ## Quick Usage
