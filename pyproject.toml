@@ -72,7 +72,7 @@ dev = [
     {include-group = "lint"},
     {include-group = "docs"},
     "commitlint",
-    "pre-commit",
+    "prek",
     "pytest-watch",
     "IPython",
     "ipdb",

@@ -1,5 +1,6 @@
 NETWORKS = {
     "abstract": [
+        "mainnet",
         "testnet",
     ],
     "apechain": [
@@ -8,7 +9,6 @@ NETWORKS = {
     ],
     "arbitrum": [
         "mainnet",
-        "nova",
         "sepolia",
     ],
     "astar": [
@@ -53,16 +53,16 @@ NETWORKS = {
         "mainnet",
         "chiado",
     ],
+    "katana": [
+        "mainnet",
+        "bokuto",
+    ],
     "lens": [
         "sepolia",
     ],
     "linea": [
         "mainnet",
         "sepolia",
-    ],
-    "lumia": [
-        "prism",
-        "beam",
     ],
     "mantle": [
         "mainnet",
@@ -96,6 +96,7 @@ NETWORKS = {
         "sepolia",
     ],
     "soneium": [
+        "mainnet",
         "minato",
     ],
     "sonic": [
@@ -103,6 +104,7 @@ NETWORKS = {
         "blaze",
     ],
     "unichain": [
+        "mainnet",
         "sepolia",
     ],
     "world-chain": [
