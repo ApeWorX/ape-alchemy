@@ -5,9 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional
 from ape.api import ReceiptAPI, TraceAPI, TransactionAPI, UpstreamProvider
 from ape.exceptions import (
     APINotImplementedError,
-    ContractLogicError,
     TransactionNotFoundError,
-    VirtualMachineError,
 )
 from ape.logging import logger
 from ape.utils import request_with_retry
@@ -238,38 +236,6 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
     def get_transaction_trace(self, transaction_hash: str, **kwargs) -> TraceAPI:
         return AlchemyTransactionTrace(transaction_hash=transaction_hash, **kwargs)
-
-    def get_virtual_machine_error(self, exception: Exception, **kwargs) -> VirtualMachineError:
-        txn = kwargs.get("txn")
-        if not hasattr(exception, "args") or not len(exception.args):
-            return VirtualMachineError(base_err=exception, txn=txn)
-
-        args = exception.args
-        message = args[0]
-        if (
-            not isinstance(exception, Web3ContractLogicError)
-            and isinstance(message, dict)
-            and "message" in message
-        ):
-            # Is some other VM error, like gas related
-            return VirtualMachineError(message["message"], txn=txn)
-
-        if not isinstance(message, str):
-            return VirtualMachineError(base_err=exception, txn=txn)
-
-        # If get here, we have detected a contract logic related revert.
-        message_prefix = "execution reverted"
-        if message.startswith(message_prefix):
-            message = message.replace(message_prefix, "")
-
-            if ":" in message:
-                # Was given a revert message
-                message = message.split(":")[-1].strip()
-                return ContractLogicError(revert_message=message, txn=txn)
-            # No revert message
-            return ContractLogicError(txn=txn)
-
-        return VirtualMachineError(message=message, txn=txn)
 
     def create_access_list(
         self, transaction: TransactionAPI, block_id: Optional["BlockID"] = None
