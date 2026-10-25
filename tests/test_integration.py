@@ -20,23 +20,46 @@ NETWORK_KEY_MAP = [
 ]
 
 
+def _is_transient(err: BaseException) -> bool:
+    msg = str(err).lower()
+    return any(
+        needle in msg
+        for needle in (
+            "429",
+            "too many requests",
+            "rate limit",
+            "not connected to a network provider",
+        )
+    )
+
+
 @pytest.fixture(params=NETWORK_KEY_MAP)
 def provider(request):
     eco_name, net_name = request.param.split(":")
     ecosystem_cls = networks.get_ecosystem(eco_name)
     network_cls = ecosystem_cls.get_network(net_name)
-    with network_cls.use_provider("alchemy") as provider:
-        yield provider
+    try:
+        with network_cls.use_provider("alchemy") as alchemy_provider:
+            yield alchemy_provider
+    except Exception as err:
+        if _is_transient(err):
+            pytest.skip(str(err))
+        raise
 
 
 def test_http(provider):
     assert isinstance(provider, Alchemy)
     assert provider.http_uri.startswith("https")
 
-    # NOTE: Sometimes the balance is 0, for some chains.
-    assert provider.get_balance(ZERO_ADDRESS) is not None
-    assert provider.get_block(0)
-    assert provider.get_block("latest")
+    try:
+        # NOTE: Sometimes the balance is 0, for some chains.
+        assert provider.get_balance(ZERO_ADDRESS) is not None
+        assert provider.get_block(0)
+        assert provider.get_block("latest")
+    except Exception as err:
+        if _is_transient(err):
+            pytest.skip(str(err))
+        raise
 
 
 def test_ws(provider):
@@ -53,6 +76,8 @@ def test_ws(provider):
         ws.close()
 
     except Exception as err:
+        if _is_transient(err):
+            pytest.skip(str(err))
         pytest.fail(f"Websocket URI not accessible. Reason: {err}")
 
 
@@ -66,17 +91,27 @@ def test_make_request_handles_result():
         "value": "0x0",
         "data": "0x70a082310000000000000000000000005576815a38a3706f37bf815b261ccc7cca77e975",
     }
-    with networks.ethereum.sepolia.use_provider("alchemy") as provider:
-        result = provider.make_request("eth_call", [tx, "latest"])
-        assert not isinstance(result, dict)
+    try:
+        with networks.ethereum.sepolia.use_provider("alchemy") as alchemy_provider:
+            result = alchemy_provider.make_request("eth_call", [tx, "latest"])
+            assert not isinstance(result, dict)
+    except Exception as err:
+        if _is_transient(err):
+            pytest.skip(str(err))
+        raise
 
 
 def test_get_receipt():
-    with networks.ethereum.sepolia.use_provider("alchemy") as alchemy:
-        txn_hash = "0x68605140856c13038d325048c411aed98cc1eecc189f628a38edb597f6b9679e"
-        existing_tx = alchemy.get_receipt(txn_hash)
-        assert existing_tx.txn_hash == txn_hash
+    try:
+        with networks.ethereum.sepolia.use_provider("alchemy") as alchemy:
+            txn_hash = "0x68605140856c13038d325048c411aed98cc1eecc189f628a38edb597f6b9679e"
+            existing_tx = alchemy.get_receipt(txn_hash)
+            assert existing_tx.txn_hash == txn_hash
 
-        txn_hash = "0x66600044856c13038d325048c411aed98cc1eecc189f628a38eeeeeeeeeeeeee"
-        with pytest.raises(TransactionNotFoundError):
-            _ = alchemy.get_receipt(txn_hash)
+            txn_hash = "0x66600044856c13038d325048c411aed98cc1eecc189f628a38eeeeeeeeeeeeee"
+            with pytest.raises(TransactionNotFoundError):
+                _ = alchemy.get_receipt(txn_hash)
+    except Exception as err:
+        if _is_transient(err):
+            pytest.skip(str(err))
+        raise
