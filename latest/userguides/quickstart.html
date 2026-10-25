@@ -81,7 +81,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li><a class="reference internal" href="#installation">Installation</a><ul>
 <li><a class="reference internal" href="#via-pip">via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
-<li><a class="reference internal" href="#via-setuptools">via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code></a></li>
+<li><a class="reference internal" href="#via-source">via source</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#quick-usage">Quick Usage</a><ul>
@@ -195,7 +195,7 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 <section id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.python.org/downloads">python3</a> version 3.9 up to 3.12.</p></li>
+<li><p><a class="reference external" href="https://www.python.org/downloads">Python 3</a> version 3.10 or greater.</p></li>
 </ul>
 </section>
 <section id="installation">
@@ -207,12 +207,13 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 </span></pre></div>
 </div>
 </section>
-<section id="via-setuptools">
-<h3>via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code><a class="headerlink" href="#via-setuptools" title="Link to this heading">#</a></h3>
-<p>You can clone the repository and use <a class="reference external" href="https://github.com/pypa/setuptools"><code class="docutils literal notranslate"><span class="pre">setuptools</span></code></a> for the most up-to-date version:</p>
+<section id="via-source">
+<h3>via source<a class="headerlink" href="#via-source" title="Link to this heading">#</a></h3>
+<p>You can clone the repository and install for development:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ApeWorX/ape-alchemy.git
 </span><span data-line="2"><span class="nb">cd</span><span class="w"> </span>ape-alchemy
-</span><span data-line="3">python3<span class="w"> </span>setup.py<span class="w"> </span>install
+</span><span data-line="3">uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>dev
+</span><span data-line="4">uv<span class="w"> </span>run<span class="w"> </span>prek<span class="w"> </span>install
 </span></pre></div>
 </div>
 </section>
