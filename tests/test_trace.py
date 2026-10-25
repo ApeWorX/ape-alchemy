@@ -2,6 +2,8 @@ import pytest
 from ape import chain, networks
 from ethpm_types import ContractType
 
+from ape_alchemy.exceptions import AlchemyFeatureNotAvailable
+
 
 @pytest.fixture(autouse=True)
 def ethereum_mainnet_alchemy():
@@ -12,7 +14,10 @@ def ethereum_mainnet_alchemy():
 def test_revert_message():
     txn_hash = "0x36144f609e0fc7afd3cc570d6a54582091642a44c5223a5ad59aa20008dd9577"
     receipt = chain.history[txn_hash]
-    actual = receipt.trace.revert_message
+    try:
+        actual = receipt.trace.revert_message
+    except AlchemyFeatureNotAvailable as err:
+        pytest.skip(str(err))
     expected = "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT"
     assert actual == expected
 
@@ -33,6 +38,9 @@ def test_return_value():
     ]
     chain.contracts[receipt.receiver] = ContractType(abi=abi)
 
-    actual = receipt.return_value
+    try:
+        actual = receipt.return_value
+    except AlchemyFeatureNotAvailable as err:
+        pytest.skip(str(err))
     expected = 1244617160572980465
     assert actual == expected

@@ -1,5 +1,6 @@
 NETWORKS = {
     "abstract": [
+        "mainnet",
         "testnet",
     ],
     "apechain": [
@@ -8,7 +9,6 @@ NETWORKS = {
     ],
     "arbitrum": [
         "mainnet",
-        "nova",
         "sepolia",
     ],
     "astar": [
@@ -53,16 +53,17 @@ NETWORKS = {
         "mainnet",
         "chiado",
     ],
+    "katana": [
+        "mainnet",
+        "bokuto",
+    ],
     "lens": [
+        "mainnet",
         "sepolia",
     ],
     "linea": [
         "mainnet",
         "sepolia",
-    ],
-    "lumia": [
-        "prism",
-        "beam",
     ],
     "mantle": [
         "mainnet",
@@ -79,30 +80,27 @@ NETWORKS = {
         "mainnet",
         "amoy",
     ],
-    "polygon-zkevm": [
-        "mainnet",
-        "cardona",
-    ],
     "rootstock": [
         "mainnet",
         "testnet",
     ],
     "scroll": [
         "mainnet",
-        "sepolia",
     ],
     "shape": [
         "mainnet",
         "sepolia",
     ],
     "soneium": [
+        "mainnet",
         "minato",
     ],
     "sonic": [
         "mainnet",
-        "blaze",
+        "testnet",
     ],
     "unichain": [
+        "mainnet",
         "sepolia",
     ],
     "world-chain": [

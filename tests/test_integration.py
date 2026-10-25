@@ -56,16 +56,6 @@ def test_ws(provider):
         pytest.fail(f"Websocket URI not accessible. Reason: {err}")
 
 
-def test_polygon_zkevm():
-    # We noticed strange behavior on this network and thus called for more tests.
-    with networks.polygon_zkevm.cardona.use_provider("alchemy") as provider:
-        with pytest.raises(APINotImplementedError):
-            _ = provider.priority_fee
-
-        receiver = accounts.test_accounts[0]
-        tx = provider.network.ecosystem.create_transaction(receiver=receiver)
-        with pytest.raises(APINotImplementedError):
-            _ = provider.create_access_list(tx)
 
 
 def test_make_request_handles_result():
@@ -78,7 +68,7 @@ def test_make_request_handles_result():
         "value": "0x0",
         "data": "0x70a082310000000000000000000000005576815a38a3706f37bf815b261ccc7cca77e975",
     }
-    with networks.polygon_zkevm.cardona.use_provider("alchemy") as provider:
+    with networks.ethereum.sepolia.use_provider("alchemy") as provider:
         result = provider.make_request("eth_call", [tx, "latest"])
         assert not isinstance(result, dict)
 
