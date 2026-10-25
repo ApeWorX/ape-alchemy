@@ -121,6 +121,10 @@ class Alchemy(Web3Provider, UpstreamProvider):
         if self.network.ecosystem.name == "fantom" and self.network.name == "opera":
             network_name = "mainnet"
 
+        # ape-sonic still calls the testnet "blaze"; Alchemy hosts it as sonic-testnet.
+        if self.network.ecosystem.name == "sonic" and self.network.name == "blaze":
+            network_name = "testnet"
+
         default_format = "{0}-{1}.g.alchemy.com/v2/{2}"
         network_formats_by_ecosystem = {
             "arbitrum": "arb-{0}.g.alchemy.com/v2/{1}",
@@ -136,9 +140,7 @@ class Alchemy(Web3Provider, UpstreamProvider):
 
         if ecosystem_name in network_formats_by_ecosystem:
             # Special cases.
-            if network_name == "nova":
-                uri = f"arbnova-mainnet.g.alchemy.com/v2/{key}"
-            elif network_name.startswith("opbnb"):
+            if network_name.startswith("opbnb"):
                 sub_network = "mainnet" if network_name == "opbnb" else "testnet"
                 uri = f"opbnb-{sub_network}.g.alchemy.com/v2/{key}"
             else:
@@ -307,6 +309,9 @@ class Alchemy(Web3Provider, UpstreamProvider):
         except HTTPError as err:
             response_data = err.response.json() if err.response else {}
             if "error" not in response_data:
+                # Free-tier debug/trace calls often return a bare 400 with no JSON body.
+                if err.response is not None and err.response.status_code == 400:
+                    raise AlchemyFeatureNotAvailable(str(err)) from err
                 raise AlchemyProviderError(str(err)) from err
 
             error_data = response_data["error"]

@@ -49,7 +49,6 @@ test = [
     "ape-fantom",
     "ape-optimism",
     "ape-polygon",
-    "ape-polygon-zkevm",
     "pytest>=6.0",
     "pytest-xdist",
     "pytest-cov",
@@ -72,7 +71,7 @@ dev = [
     {include-group = "lint"},
     {include-group = "docs"},
     "commitlint",
-    "pre-commit",
+    "prek",
     "pytest-watch",
     "IPython",
     "ipdb",
@@ -139,8 +138,6 @@ indent-style = "space"
 
 [tool.pytest.ini_options]
 addopts = """
-    -p no:ape_test
-    -p no:pytest_ethereum
     --cov-branch
     --cov-report term
     --cov-report html
