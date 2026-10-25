@@ -161,14 +161,26 @@ def test_get_contract_logs(networks, alchemy_provider, mock_web3, block, log_fil
 
 
 def test_get_transaction_trace(networks, alchemy_provider, mock_web3, parity_trace, receipt):
-    mock_web3.provider.make_request.return_value = [parity_trace]
+    def _make_request(rpc, params):
+        # Isolation teardown may ask eth_chainId; keep it a hex string.
+        if rpc in ("eth_chainId", "eth_chain_id"):
+            return "0xaa36a7"
+        return [parity_trace]
+
+    mock_web3.provider.make_request.side_effect = _make_request
     mock_web3.eth.wait_for_transaction_receipt.return_value = receipt
     alchemy_provider._web3 = mock_web3
+    previous = networks.active_provider
     networks.active_provider = alchemy_provider
-    trace = alchemy_provider.get_transaction_trace(TXN_HASH)
-    actual = repr(trace.get_calltree())
-    expected = r"CALL: 0xC17f2C69aE2E66FD87367E3260412EEfF637F70E\.<0x96d373e5\> \[1401584 gas\]"
-    assert re.match(expected, actual)
+    try:
+        trace = alchemy_provider.get_transaction_trace(TXN_HASH)
+        actual = repr(trace.get_calltree())
+        expected = (
+            r"CALL: 0xC17f2C69aE2E66FD87367E3260412EEfF637F70E\.<0x96d373e5\> \[1401584 gas\]"
+        )
+        assert re.match(expected, actual)
+    finally:
+        networks.active_provider = previous
 
 
 def test_make_request_rate_limiting(mocker, alchemy_provider, mock_web3):

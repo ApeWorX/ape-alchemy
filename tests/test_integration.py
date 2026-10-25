@@ -56,8 +56,6 @@ def test_ws(provider):
         pytest.fail(f"Websocket URI not accessible. Reason: {err}")
 
 
-
-
 def test_make_request_handles_result():
     """
     There was a bug where eth_call because ape-alchemy wasn't
