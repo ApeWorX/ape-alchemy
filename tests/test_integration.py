@@ -1,7 +1,7 @@
 import pytest
 import websocket  # type: ignore
-from ape import accounts, networks
-from ape.exceptions import APINotImplementedError, TransactionNotFoundError
+from ape import networks
+from ape.exceptions import TransactionNotFoundError
 from ape.utils import ZERO_ADDRESS
 
 from ape_alchemy._utils import NETWORKS

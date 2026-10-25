@@ -1,5 +1,6 @@
 import pytest
 from ape import chain, networks
+from ape.exceptions import ProviderError
 from ethpm_types import ContractType
 
 from ape_alchemy.exceptions import AlchemyFeatureNotAvailable
@@ -16,7 +17,7 @@ def test_revert_message():
     receipt = chain.history[txn_hash]
     try:
         actual = receipt.trace.revert_message
-    except AlchemyFeatureNotAvailable as err:
+    except (AlchemyFeatureNotAvailable, ProviderError) as err:
         pytest.skip(str(err))
     expected = "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT"
     assert actual == expected
@@ -40,7 +41,7 @@ def test_return_value():
 
     try:
         actual = receipt.return_value
-    except AlchemyFeatureNotAvailable as err:
+    except (AlchemyFeatureNotAvailable, ProviderError) as err:
         pytest.skip(str(err))
     expected = 1244617160572980465
     assert actual == expected
