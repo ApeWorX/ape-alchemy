@@ -121,6 +121,10 @@ class Alchemy(Web3Provider, UpstreamProvider):
         if self.network.ecosystem.name == "fantom" and self.network.name == "opera":
             network_name = "mainnet"
 
+        # ape-sonic still calls the testnet "blaze"; Alchemy hosts it as sonic-testnet.
+        if self.network.ecosystem.name == "sonic" and self.network.name == "blaze":
+            network_name = "testnet"
+
         default_format = "{0}-{1}.g.alchemy.com/v2/{2}"
         network_formats_by_ecosystem = {
             "arbitrum": "arb-{0}.g.alchemy.com/v2/{1}",

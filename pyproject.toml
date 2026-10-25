@@ -49,7 +49,6 @@ test = [
     "ape-fantom",
     "ape-optimism",
     "ape-polygon",
-    "ape-polygon-zkevm",
     "pytest>=6.0",
     "pytest-xdist",
     "pytest-cov",

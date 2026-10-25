@@ -53,10 +53,6 @@ NETWORKS = {
         "mainnet",
         "chiado",
     ],
-    "katana": [
-        "mainnet",
-        "bokuto",
-    ],
     "lens": [
         "mainnet",
         "sepolia",
