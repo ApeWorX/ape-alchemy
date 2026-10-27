@@ -7,7 +7,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=44020203" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
     <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,8 @@
   --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
 }
 </style>
-    <meta property="og:type" content="website"/>
+    
+  <meta property="og:type" content="website"/>
   <meta property="og:url" content="ape-alchemy/userguides/quickstart.html"/>
   <meta property="og:title" content="Quick Start"/>
     <meta name="twitter:card" content="summary"/>
@@ -80,7 +81,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li><a class="reference internal" href="#installation">Installation</a><ul>
 <li><a class="reference internal" href="#via-pip">via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
-<li><a class="reference internal" href="#via-setuptools">via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code></a></li>
+<li><a class="reference internal" href="#via-source">via source</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#quick-usage">Quick Usage</a><ul>
@@ -153,7 +154,7 @@ data-aria-dark="Switch to auto color mode">
   </div>
 </div><article class="yue" role="main">
           <section id="quick-start">
-<h1>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h1>
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h1>
 <p>Use the <a class="reference external" href="https://alchemy.com/?r=jk3NDM0MTIwODIzM">Alchemy</a> provider plugin to interact with blockchains via APIs.
 The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</span></code> plugin supports the following ecosystems:</p>
 <ul class="simple">
@@ -192,32 +193,33 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 <li><p>Zora</p></li>
 </ul>
 <section id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.python.org/downloads">python3</a> version 3.9 up to 3.12.</p></li>
+<li><p><a class="reference external" href="https://www.python.org/downloads">Python 3</a> version 3.10 or greater.</p></li>
 </ul>
 </section>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
 <section id="via-pip">
-<h3>via <code class="docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#via-pip" title="Link to this heading"></a></h3>
+<h3>via <code class="docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#via-pip" title="Link to this heading">#</a></h3>
 <p>You can install the latest release via <a class="reference external" href="https://pypi.org/project/pip/"><code class="docutils literal notranslate"><span class="pre">pip</span></code></a>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pip<span class="w"> </span>install<span class="w"> </span>ape-alchemy
 </span></pre></div>
 </div>
 </section>
-<section id="via-setuptools">
-<h3>via <code class="docutils literal notranslate"><span class="pre">setuptools</span></code><a class="headerlink" href="#via-setuptools" title="Link to this heading"></a></h3>
-<p>You can clone the repository and use <a class="reference external" href="https://github.com/pypa/setuptools"><code class="docutils literal notranslate"><span class="pre">setuptools</span></code></a> for the most up-to-date version:</p>
+<section id="via-source">
+<h3>via source<a class="headerlink" href="#via-source" title="Link to this heading">#</a></h3>
+<p>You can clone the repository and install for development:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ApeWorX/ape-alchemy.git
 </span><span data-line="2"><span class="nb">cd</span><span class="w"> </span>ape-alchemy
-</span><span data-line="3">python3<span class="w"> </span>setup.py<span class="w"> </span>install
+</span><span data-line="3">uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>dev
+</span><span data-line="4">uv<span class="w"> </span>run<span class="w"> </span>prek<span class="w"> </span>install
 </span></pre></div>
 </div>
 </section>
 </section>
 <section id="quick-usage">
-<h2>Quick Usage<a class="headerlink" href="#quick-usage" title="Link to this heading"></a></h2>
+<h2>Quick Usage<a class="headerlink" href="#quick-usage" title="Link to this heading">#</a></h2>
 <p>First, make sure you have one of the following environment variables set (it doesn’t matter which one):</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">WEB3_ALCHEMY_PROJECT_ID</span></code></p></li>
@@ -241,18 +243,18 @@ The <code class="docutils literal notranslate"><span class="pre">ape-alchemy</sp
 <p>To connect to Alchemy from a Python script, use the <code class="docutils literal notranslate"><span class="pre">networks</span></code> top-level manager:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">ape</span><span class="w"> </span><span class="kn">import</span> <span class="n">networks</span>
 </span><span data-line="2">
-</span><span data-line="3"><span class="k">with</span> <span class="n">networks</span><span class="o">.</span><span class="n">parse_network_choice</span><span class="p">(</span><span class="s2">&quot;ethereum:mainnet:alchemy&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">provider</span><span class="p">:</span>
+</span><span data-line="3"><span class="k">with</span> <span class="n">networks</span><span class="o">.</span><span class="n">parse_network_choice</span><span class="p">(</span><span class="s2">"ethereum:mainnet:alchemy"</span><span class="p">)</span> <span class="k">as</span> <span class="n">provider</span><span class="p">:</span>
 </span><span data-line="4">    <span class="o">...</span>
 </span></pre></div>
 </div>
 <section id="transaction-traces">
-<h3>Transaction Traces<a class="headerlink" href="#transaction-traces" title="Link to this heading"></a></h3>
+<h3>Transaction Traces<a class="headerlink" href="#transaction-traces" title="Link to this heading">#</a></h3>
 <p>If you are using a paid tier of Alchemy, you have access to both Geth and Parity style traces.
 Parity traces are faster and thus are the ones uses in Ethereum receipts’ <code class="docutils literal notranslate"><span class="pre">show_trace()</span></code> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">ape</span><span class="w"> </span><span class="kn">import</span> <span class="n">networks</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">networks</span><span class="o">.</span><span class="n">provider</span>  <span class="c1"># Assuming connected to Alchemy</span>
-</span><span data-line="4"><span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">&quot;0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d&quot;</span>
+</span><span data-line="4"><span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">"0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d"</span>
 </span><span data-line="5"><span class="n">receipt</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_transaction</span><span class="p">(</span><span class="n">txn_hash</span><span class="p">)</span>
 </span><span data-line="6"><span class="n">receipt</span><span class="o">.</span><span class="n">show_trace</span><span class="p">()</span>  <span class="c1"># Prints the Transaction trace</span>
 </span></pre></div>
@@ -261,7 +263,7 @@ Parity traces are faster and thus are the ones uses in Ethereum receipts’ <cod
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">ape</span><span class="w"> </span><span class="kn">import</span> <span class="n">networks</span>
 </span><span data-line="2">
 </span><span data-line="3"><span class="n">alchemy</span> <span class="o">=</span> <span class="n">networks</span><span class="o">.</span><span class="n">provider</span>  <span class="c1"># Assuming connected to Alchemy</span>
-</span><span data-line="4"><span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">&quot;0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d&quot;</span>
+</span><span data-line="4"><span class="n">txn_hash</span> <span class="o">=</span> <span class="s2">"0x053cba5c12172654d894f66d5670bab6215517a94189a9ffc09bc40a589ec04d"</span>
 </span><span data-line="5"><span class="n">call_tree</span> <span class="o">=</span> <span class="n">alchemy</span><span class="o">.</span><span class="n">get_call_tree</span><span class="p">(</span><span class="n">txn_hash</span><span class="p">)</span>
 </span></pre></div>
 </div>
@@ -316,5 +318,5 @@ Parity traces are faster and thus are the ones uses in Ethereum receipts’ <cod
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script data-domain="docs.apeworx.io" defer="defer" src="https://plausible.io/js/script.js"></script>
-      <script src="../_static/shibuya.js?v=cac61aee"></script></body>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
 </html>
