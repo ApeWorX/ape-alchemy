@@ -27,12 +27,12 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "eth-ape>=0.8.34,<0.9",
-    "eth-pydantic-types>=0.2.0,<0.3",
-    "ethpm-types>=0.6.26,<0.7",
-    "evm-trace>=0.2.6,<0.3",
-    "web3>=6.20.1,<8",
+    "eth-pydantic-types",  # Use same version as eth-ape
+    "ethpm-types",  # Use same version as eth-ape
+    "evm-trace",  # Use same version as eth-ape
+    "web3",  # Use same version as eth-ape
     "requests>=2.32.3,<3",
-    "evmchains>=0.1.7,<0.2",
+    "evmchains",  # Use same version as eth-ape
 ]
 dynamic = ["version"]
 
